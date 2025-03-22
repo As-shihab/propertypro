@@ -63,7 +63,7 @@ export default function Card(data: any) {
           <div className="flex justify-between items-start">
             <Link
               to="/"
-              className="text-xl font-bold  transition-all duration-300 ease-in-out"
+              className="text-lg font-[500] transition-all duration-300 ease-in-out"
             >
               <span>
                 {service.textreducing(
@@ -86,12 +86,12 @@ export default function Card(data: any) {
           <span className=" text-xs py-1 ">Oct 4 to Infinite</span>
 
           <div className="  pt-1 flex justify-between items-center">
-            <span className="text-lg text-indigo-900 font-bold">
+            <span className="text-md text-indigo-900 font-bold">
               $343 per day
             </span>
 
             {/* ✅ Simple Button without too much styling */}
-            <button className="px-3 py-2 text-sm cursor-pointer bg-blue-600 text-white font-medium rounded-lg hover:bg-indigo-700 transition-all duration-300">
+            <button className="px-2 py-2 text-sm cursor-pointer bg-blue-600 text-white font-medium rounded-lg hover:bg-indigo-700 transition-all duration-300">
               Book Now
             </button>
           </div>

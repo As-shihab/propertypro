@@ -1,6 +1,40 @@
 @import "tailwindcss";
 
-
 body {
   font-family: "Poppins", sans-serif;
+}
+
+.dialog {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 55;
+  backdrop-filter: blur(45px);
+  padding: 12px;
+  animation-name: dialog;
+  animation-duration: 0.5s;
+  transition: all 0.5s;
+}
+@keyframes dialog {
+  0% {
+    position: fixed;
+    top: 0%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 55;
+    backdrop-filter: blur(45px);
+    padding: 12px;
+  }
+  100%{
+      position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 55;
+  backdrop-filter: blur(45px);
+  padding: 12px;
+  animation-name: dialog;
+  animation-duration: 0.6s;
+  }
 }

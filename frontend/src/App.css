@@ -29,3 +29,9 @@
 .custom-next-arrow {
   right: -30px; /* Adjust as needed */
 }
+.combofilter{
+  width: 60%;
+  height: 80vh;
+  overflow: auto;
+  border-radius: 20px;
+}

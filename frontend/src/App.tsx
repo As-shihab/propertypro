@@ -4,6 +4,7 @@ import Header from "./components/header";
 import { GlobalContext } from "./guard/GlobalContext";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import PropertyPro from "./pages/home/PropertyPro";
+import Footer from "./pages/footer/Footer";
 
 function App() {
   const [user, setUser] = useState("hello");
@@ -18,6 +19,7 @@ function App() {
             <Route path="/" element={<PropertyPro />} />
           </Routes>
         </Router>
+        <Footer/>
       </GlobalContext.Provider>
     </>
   );
