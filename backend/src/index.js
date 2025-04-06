@@ -6,8 +6,8 @@ app.use(cors());
 
 
 // listening port ===============
-const prot = 3000 || process.env.PORT;
-app.listen(prot , ()=>{
+const port = 3000 || process.env.PORT;
+app.listen(port , ()=>{
     console.log('server listening successfully on port'  , port)
 })
 
