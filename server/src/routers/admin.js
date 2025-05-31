@@ -8,10 +8,4 @@ admin.post('/users', user.createUser);
 admin.put('/users/:id', user.updateUser);
 
 
-
-
-
-
-
-
-module.exports = admin;
+module.exports = admin;                        

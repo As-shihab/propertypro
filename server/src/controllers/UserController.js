@@ -1,4 +1,5 @@
 const { sendEmail } = require("../../config/email_sent");
+const upload = require("../../config/file_upload.config");
 const { prisma } = require("../../config/prisma.config");
 const { createToken } = require("../helpers/jsonwebtoken");
 
@@ -11,6 +12,8 @@ class UserController {
   }
 
   async getUsers(req, res) {
+ 
+    // If the request has a file, handle it 
     try {
       const usersPromise = prisma.user.findMany({
          skip: req.skip,
@@ -54,6 +57,20 @@ class UserController {
   }
 
   async createUser(req, res) {
+
+   upload.array("files", 10)(req, res, (err) => {
+      if (err) {
+        console.error("File upload error:", err);
+        return res.status(400).json({ error: "File upload failed" });
+      }
+      return res.status(200).json({
+        message: "Files uploaded successfully",
+        files: req.files,
+      });
+    });
+
+    return;
+
     const { name, email, password } = req.body;
     if (!password) {
       return res.status(400).json({ error: "Password is required" });
