@@ -28,7 +28,7 @@ model User {
     email   String   @unique
     profile Profile?
     custom_id String? @unique
-    password String? @db.VarChar(255)
+    password String @db.VarChar(255)
     user_otp String? @unique
     verification_token String? @unique
     verification_token_expiry DateTime?

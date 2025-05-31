@@ -9,10 +9,26 @@ class UserController {
   }
 
   async getUsers(req, res) {
+    
     try {
-      const users = await prisma.user.findMany({
+      const usersPromise = prisma.user.findMany({
+         skip: req.skip,
+         take: req.take,
+         where:{ name:{  startsWith:'shihab' } },
         orderBy: { createdAt: "desc" },
       });
+
+      // If count=true, fetch total count as well
+      if (req.count) {
+        const [users, totalCount] = await Promise.all([
+          usersPromise,
+          prisma.user.count(),
+        ]);
+
+        return res.status(200).json({ users, totalCount });
+      }
+
+      const users = await usersPromise;
       res.status(200).json(users);
     } catch (error) {
       console.error("Error fetching users:", error);
@@ -25,10 +41,6 @@ class UserController {
     try {
       const user = await prisma.user.findUnique({
         where: { id: parseInt(id, 10) },
-        include: {
-          posts: true,
-          comments: true,
-        },
       });
       if (!user) {
         return res.status(404).json({ error: "User not found" });
@@ -41,12 +53,26 @@ class UserController {
   }
 
   async createUser(req, res) {
-    const { name, email } = req.body;
+    const { name, email, password } = req.body;
+    if (!password) {
+      return res.status(400).json({ error: "Password is required" });
+    }
+    if (password.length < 6) {
+      return res
+        .status(400)
+        .json({ error: "Password must be at least 6 characters long" });
+    }
+
+    if (!email) {
+      return res.status(400).json({ error: "Email is required" });
+    }
+
     try {
       const newUser = await prisma.user.create({
         data: {
           name,
           email,
+          password,
         },
       });
       res.status(201).json(newUser);
