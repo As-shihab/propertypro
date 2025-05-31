@@ -1,4 +1,6 @@
+const { sendEmail } = require("../../config/email_sent");
 const { prisma } = require("../../config/prisma.config");
+const { createToken } = require("../helpers/jsonwebtoken");
 
 class UserController {
   constructor() {
@@ -9,12 +11,12 @@ class UserController {
   }
 
   async getUsers(req, res) {
-    
     try {
       const usersPromise = prisma.user.findMany({
          skip: req.skip,
          take: req.take,
-         where:{ name:{  startsWith:'shihab' } },
+         where: req.where,
+         include: req.$expand || {},
         orderBy: { createdAt: "desc" },
       });
 
@@ -24,7 +26,6 @@ class UserController {
           usersPromise,
           prisma.user.count(),
         ]);
-
         return res.status(200).json({ users, totalCount });
       }
 

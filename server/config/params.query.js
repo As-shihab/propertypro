@@ -6,7 +6,7 @@ const paramsquery = async (req, res, next) => {
 
   if (req.query.$filter) {
     const filterString = req.query.$filter;
-    
+
     const filters = filterString.split(",").map((pair) => pair.trim());
 
     filters.forEach((filter) => {
@@ -15,19 +15,20 @@ const paramsquery = async (req, res, next) => {
         const key = match[1];
         const value = match[2];
         req.where[key] = {
-          contains: value,
-          mode: "insensitive",
+          startsWith: value,
         };
       }
     });
   }
 
-  console.log("Parsed Query:", {
-    count: req.count,
-    skip: req.skip,
-    take: req.take,
-    where: req.where,
-  });
+  if (req.query.$expand) {
+    const expandString = req.query.$expand;
+    const expands = expandString.split(",").map((item) => item.trim());
+    req.$expand = {};
+    expands.forEach((expand) => {
+      req.$expand[expand] = true;
+    });
+  }
 
   next();
 };
