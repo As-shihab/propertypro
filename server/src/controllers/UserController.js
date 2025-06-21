@@ -1,9 +1,9 @@
-const { compare } = require("bcrypt");
+
 const { sendEmail } = require("../../config/email_sent");
 const upload = require("../../config/file_upload.config");
 const { prisma } = require("../../config/prisma.config");
 const { createToken, verifyToken } = require("../helpers/jsonwebtoken");
-const { compareHash, compareString } = require("../helpers/hash");
+const { makeHash,  compareHash} = require("../helpers/hash");
 
 class UserController {
   constructor() {
@@ -43,12 +43,22 @@ class UserController {
   }
 
   async getUserById(req, res) {
-    console.log("getUserById called with params:", req.params);
-    return;
+
     const { id } = req.params;
     try {
       const user = await prisma.user.findUnique({
-        where: { id: parseInt(id, 10) },
+        where: { id: parseInt(id, 10) , 
+          
+        },
+        select:{
+          id: true,
+          name: true,
+          email: true,
+          createdAt: true,
+          updatedAt: true,
+          login_token: true, 
+          
+        }
       });
       if (!user) {
         return res.status(404).json({ error: "User not found" });
@@ -62,6 +72,7 @@ class UserController {
 
   async createUser(req, res) {
     const { name, email, password } = req.body;
+
     if (!password) {
       return res.status(400).json({ error: "Password is required" });
     }
@@ -76,16 +87,17 @@ class UserController {
     }
 
     try {
+          const hashed = await makeHash(password);
       const newUser = await prisma.user.create({
         data: {
           name,
           email,
-          password,
+          password: hashed, 
         },
       });
-      this.login(req, res); // Automatically log in the user after creation
+
+      this.login(req, res); 
       return;
-      res.status(201).json(newUser);
     } catch (error) {
       if (error.code === "P2002" && error.meta?.target?.includes("email")) {
         // Prisma unique constraint violation on email
@@ -116,13 +128,12 @@ class UserController {
   }
 
   async logOut(req, res) {
-    console.log(req.headers?.login_token)
-    return;
     try {
       const token = req.headers.authorization?.split(" ")[1];
       if (!token) {
         return res.status(401).json({ error: "Unauthorized" });
       }
+
    
     } catch (error) {
       console.error("Error logging out:", error);
@@ -132,7 +143,6 @@ class UserController {
 
   // login user =========================
   async login(req, res) {
-    console.log("Login request received", req.body);
     const { email, password } = req.body;
     if (!email) {
       return res.status(400).json({ error: "Email is required" });
@@ -149,7 +159,7 @@ class UserController {
         return res.status(404).json({ error: "User not found" });
       }
 
-      const isPasswordValid = compareString(password, user.password); // Assuming password is stored in plain text, which is not recommended
+      const isPasswordValid = await compareHash(password, user.password); // Assuming password is stored in plain text, which is not recommended
       if (!isPasswordValid) {
         return res.status(401).json({ error: "Invalid password" });
       }

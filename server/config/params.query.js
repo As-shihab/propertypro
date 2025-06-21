@@ -29,7 +29,14 @@ const paramsquery = async (req, res, next) => {
       req.$expand[expand] = true;
     });
   }
-
+  
+console.log("Params Query Middleware:", {
+    count: req.count,
+    skip: req.skip,
+    take: req.take,
+    where: req.where,
+    expand: req.$expand,
+  });
   next();
 };
 

@@ -1,8 +1,8 @@
 const bycript = require('bcrypt');
-const hash = async (password) => {
+const makeHash = async (data) => {
   const salt = await bycript.genSalt(10);
-  const hashedPassword = await bycript.hash(password, salt);
-  return hashedPassword;
+  const result = await bycript.hash(data, salt);
+  return result;
 };
 
 const compareHash = async (password, hashedPassword) => {
@@ -17,4 +17,4 @@ compareString = (string1 , string2)=>{
   return string1 === string2;
 }
 
-module.exports = {hash , compareHash , compareString};
+module.exports = {makeHash , compareHash , compareString};
