@@ -13,9 +13,9 @@ export default function PropertyPro() {
 
       <div className="w-[98%] grid gap-3 mt-4 grid-cols-4 m-auto">
         {
-          arr.map((item)=>{
+          arr.map((item :any)=>{
             return(
- <Card itemperpage={services.CardPerPage} />
+ <Card />
             )
           })
         }
