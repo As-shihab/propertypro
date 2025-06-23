@@ -14,8 +14,10 @@ const paramsquery = async (req, res, next) => {
       if (match) {
         const key = match[1];
         const value = match[2];
+        console.log("Filter Key:", key, "Value:", value);
         req.where[key] = {
           startsWith: value,
+          id: key === "id" ? value : undefined,
         };
       }
     });
@@ -29,8 +31,8 @@ const paramsquery = async (req, res, next) => {
       req.$expand[expand] = true;
     });
   }
-  
-console.log("Params Query Middleware:", {
+
+  console.log("Params Query Middleware:", {
     count: req.count,
     skip: req.skip,
     take: req.take,

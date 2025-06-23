@@ -10,7 +10,6 @@ const compareHash = async (password, hashedPassword) => {
   return isMatch;
 };
 
-
 compareString = (string1 , string2)=>{
   string1 = string1.toLowerCase();
   string2 = string2.toLowerCase();

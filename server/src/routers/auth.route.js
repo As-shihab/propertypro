@@ -5,7 +5,6 @@ const UserController = require('../controllers/UserController');
 const userController = new UserController();
 
 auth.get('/users', userController.getUsers);
-auth.get('/users/:id', userController.getUserById);
 auth.post('/create-user', userController.createUser);
 auth.put('/users/:id', userController.updateUser);
 auth.get('/logout', userController.logOut);
