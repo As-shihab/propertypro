@@ -1,10 +1,10 @@
-import React from "react";
+
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import "react-lazy-load-image-component/src/effects/blur.css";
 import Img from '../../assets/images/loign.jpg';  // Replace with actual images
 
 const GalleryPage = () => {
-  const images = Array.from({ length: 4 }, (_, i) => Img); // Example array, replace with actual images
+  const images = Array.from({ length: 4 }, () => Img); // Example array, replace with actual images
   
   return (
     <div className="min-h-screen bg-gray-50 py-10">

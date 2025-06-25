@@ -1,4 +1,4 @@
-import React from "react";
+
 import { CiStar } from "react-icons/ci";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import "react-lazy-load-image-component/src/effects/blur.css";
@@ -9,7 +9,7 @@ import { IoIosArrowDropright, IoIosArrowDropleft } from "react-icons/io";
 import ProfilePic from '../../assets/images/loign.jpg'; // Replace with actual image
 
 export default function Card() {
-  const images = Array.from({ length: 4 }, (_, i) => Img);
+  const images = Array.from({ length: 4 }, () => Img);
 
   const NextArrow = (props: any) => {
     const { onClick } = props;

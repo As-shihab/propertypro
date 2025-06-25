@@ -1,17 +1,17 @@
-import { useContext, useState } from "react";
+import {useState } from "react";
 import { AiOutlineGlobal } from "react-icons/ai";
 import { FaUserCircle } from "react-icons/fa";
 import { FaBarsStaggered } from "react-icons/fa6";
-import { GlobalContext } from "../guard/GlobalContext";
+
 import { NavLink } from "react-router-dom";
 import Dialog from "./dialogs/Dialog";
-import Login from "../Auth/Login";
-import Signup from "../Auth/SignUp";
-import { AnimatePresence } from "framer-motion";
 import OtpVerification from "../Auth/OtpVerification";
+import { AnimatePresence } from "framer-motion";
+import Signup from "../Auth/SignUp";
+import Login from "../Auth/Login";
 
 export default function Header() {
-  const context = useContext(GlobalContext);
+
   const [open, setOpen] = useState(false);
   const [mode, setMode] = useState<"login" | "signup">("login");
 
@@ -84,15 +84,15 @@ export default function Header() {
         onClose={handleClose}
         title={mode === "login" ? "Login" : "Sign Up"}
       >
-          <OtpVerification email="study.shihab@gmail.com"/>
+          {/* <OtpVerification email="study.shihab@gmail.com"/> */}
 
-        {/* <AnimatePresence mode="wait">
+        <AnimatePresence mode="wait">
           {mode === "login" ? (
             <Login key="login" switchToSignup={() => setMode("signup")} />
           ) : (
             <Signup key="signup" switchToLogin={() => setMode("login")} />
           )}
-        </AnimatePresence> */}
+        </AnimatePresence>
       </Dialog>
     </header>
   );

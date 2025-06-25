@@ -5,18 +5,20 @@ import { GlobalContext } from "./guard/GlobalContext";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import PropertyPro from "./pages/home/PropertyPro";
 import Footer from "./pages/footer/Footer";
+import NotFound404 from "./pages/notfound/notfound404";
 
 function App() {
-  const [user, setUser] = useState("hello");
-  const data = { name: "shiab" };
+  const [user , setUser] = useState({});
+
 
   return (
     <>
-      <GlobalContext.Provider value={{ user, data }}>
+      <GlobalContext.Provider value={{ user , setUser }}>
         <Router>
           <Header />
           <Routes>
             <Route path="/" element={<PropertyPro />} />
+            <Route path="*" element={<NotFound404 />} />
           </Routes>
         </Router>
         <Footer/>

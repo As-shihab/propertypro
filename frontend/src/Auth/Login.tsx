@@ -2,6 +2,8 @@
 import React, { useState } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { motion } from "framer-motion";
+import { RiLoader4Fill } from "react-icons/ri";
+import { httpClient } from "../services/http";
 
 type LoginProps = {
   switchToSignup: () => void;
@@ -9,6 +11,81 @@ type LoginProps = {
 
 const Login: React.FC<LoginProps> = ({ switchToSignup }) => {
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState<{ email?: string; password?: string ,unauthorized?:string}>({});
+
+  let http = new httpClient();
+
+  const [user, setUser] = useState({
+    email: "",
+    password: "",
+  });
+
+  // Email validation
+  const validateEmail = (email: string): string | undefined => {
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!email.trim()) return "Email is required";
+    if (!regex.test(email)) return "Invalid email format";
+    return undefined;
+  };
+
+  // Password validation
+  const validatePassword = (password: string): string | undefined => {
+    if (!password.trim()) return "Password is required";
+    if (password.length < 6) return "Password must be at least 6 characters";
+    if (!/\d/.test(password) || !/[a-zA-Z]/.test(password))
+      return "Password must include letters and numbers";
+    return undefined;
+  };
+
+  // Handle change
+  const handleEmailChange = (value: string) => {
+    setUser({ ...user, email: value });
+    const error = validateEmail(value);
+    setErrors((prev) => ({ ...prev, email: error }));
+  };
+
+  const handlePasswordChange = (value: string) => {
+    setUser({ ...user, password: value });
+    const error = validatePassword(value);
+    setErrors((prev) => ({ ...prev, password: error }));
+  };
+
+  const onLogin = () => {
+    const emailError = validateEmail(user.email);
+    const passwordError = validatePassword(user.password);
+    setErrors({ email: emailError, password: passwordError });
+
+    if (emailError || passwordError) return;
+
+    setLoading(true);
+
+    http
+      .post("/auth/login", user)
+      .then((res :any) => {
+        console.log( res.data.token);
+         http.saveToken("token", res.data.token);
+         location.reload();
+        
+      })
+      .catch((err) => {
+        console.error("Login failed:", err);
+        if (err.response?.data?.error === "Email is required") {
+          setErrors((prev) => ({ ...prev, email: "Email is required" }));
+        } else if (err.response?.data?.error === "Password is required") {
+          setErrors((prev) => ({ ...prev, password: "Password is required" }));
+        }
+        else if (err.response?.data?.error === "User not found") {
+          setErrors((prev) => ({ ...prev, unauthorized: "User not found" }));
+        }
+        else if (err.response?.data?.error === "Invalid password") {
+          setErrors((prev) => ({ ...prev, unauthorized: "Invalid password" }));
+        }
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  };
 
   return (
     <motion.form
@@ -19,7 +96,7 @@ const Login: React.FC<LoginProps> = ({ switchToSignup }) => {
       transition={{ duration: 0.3 }}
       className="space-y-4"
     >
-      {/* Email or Phone */}
+      {/* Email */}
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-1">
           Email or Phone
@@ -27,8 +104,15 @@ const Login: React.FC<LoginProps> = ({ switchToSignup }) => {
         <input
           type="text"
           placeholder="example@email.com or +8801xxxxxxx"
-          className="w-full px-4 py-2 border border-gray-300 rounded-md"
+          className={`w-full px-4 py-2 border ${
+            errors.email ? "border-red-500" : "border-gray-300"
+          } rounded-md`}
+          onChange={(e) => handleEmailChange(e.target.value)}
+          value={user.email}
         />
+        {errors.email && (
+          <p className="text-sm text-red-500 mt-1">{errors.email}</p>
+        )}
       </div>
 
       {/* Password */}
@@ -40,7 +124,11 @@ const Login: React.FC<LoginProps> = ({ switchToSignup }) => {
           <input
             type={showPassword ? "text" : "password"}
             placeholder="••••••••"
-            className="w-full px-4 py-2 border border-gray-300 rounded-md pr-10"
+            className={`w-full px-4 py-2 border ${
+              errors.password ? "border-red-500" : "border-gray-300"
+            } rounded-md pr-10`}
+            onChange={(e) => handlePasswordChange(e.target.value)}
+            value={user.password}
           />
           <button
             type="button"
@@ -50,6 +138,11 @@ const Login: React.FC<LoginProps> = ({ switchToSignup }) => {
             {showPassword ? <FaEyeSlash /> : <FaEye />}
           </button>
         </div>
+        {errors.password ? (
+          <p className="text-sm text-red-500 mt-1">{errors.password}</p>
+        ) : errors.unauthorized?(
+          <p className="text-sm text-red-500 mt-1">{errors.unauthorized}</p>
+        ):null}
         <div className="text-right mt-1">
           <button
             type="button"
@@ -61,12 +154,24 @@ const Login: React.FC<LoginProps> = ({ switchToSignup }) => {
       </div>
 
       {/* Login Button */}
-      <button
-        type="submit"
-        className="w-full bg-blue-600 text-white py-2 rounded-md"
-      >
-        Login
-      </button>
+      {loading ? (
+        <button
+          type="button"
+          className="w-full flex items-center justify-center gap-2 bg-blue-600 text-white rounded-md py-2 hover:bg-blue-700 transition"
+          disabled
+        >
+          <RiLoader4Fill className="animate-spin text-2xl" />
+          <span>Loading...</span>
+        </button>
+      ) : (
+        <button
+          type="button"
+          onClick={onLogin}
+          className="w-full bg-blue-600 text-white rounded-md py-2 cursor-pointer hover:bg-blue-700 transition"
+        >
+          Login
+        </button>
+      )}
 
       {/* OR Divider */}
       <div className="flex items-center my-4">

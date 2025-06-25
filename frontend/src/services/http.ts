@@ -1,6 +1,6 @@
 import axios from "axios";
-axios.defaults.baseURL='http://localhost:3000'
-export class http {
+axios.defaults.baseURL = "http://localhost:3000";
+export class httpClient {
   constructor() {}
 
   post(endpoint: string, data: object | any) {
@@ -17,5 +17,18 @@ export class http {
 
   delete(endpoint: string, id: string | number) {
     return axios.delete(endpoint + "/" + id);
+  }
+
+  saveToken(name: string, token: string) {
+    localStorage.setItem(name, token);
+  }
+  getToken(name: string) {
+    return localStorage.getItem(name);
+  }
+  removeToken(name: string) {
+    localStorage.removeItem(name);
+  }
+  clearAllTokens() {
+    localStorage.clear();
   }
 }
