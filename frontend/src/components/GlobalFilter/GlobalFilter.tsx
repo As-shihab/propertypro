@@ -79,11 +79,8 @@ const GlobalFilter: React.FC = () => {
         </div>
       </div>
 
-      {/* adding combo filter */}
-      <ComboFilter
-      isOpen= {isfilter}
-      setIsOpen = {setFilter}
-      />
+      <ComboFilter isOpen={isfilter} setIsOpen={setFilter} />
+
     </div>
   );
 };

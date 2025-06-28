@@ -1,97 +1,100 @@
-import React from "react";
+
 import { CiStar } from "react-icons/ci";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import "react-lazy-load-image-component/src/effects/blur.css";
 import { Link } from "react-router-dom";
 import Slider from "react-slick";
-import Img from "/rain.png";
-import { Common } from "../../services/commonservice";
-import { IoIosArrowDropright } from "react-icons/io";
-export default function Card(data: any) {
-  const service = new Common();
-  const arr = Array.from({ length: 8 }, (_, i) => {
-    i + 1;
-  });
-  function Next_Photos(props: any) {
+import Img from '../../assets/images/loign.jpg';
+import { IoIosArrowDropright, IoIosArrowDropleft } from "react-icons/io";
+import ProfilePic from '../../assets/images/loign.jpg'; // Replace with actual image
+
+export default function Card() {
+  const images = Array.from({ length: 4 }, () => Img);
+
+  const NextArrow = (props: any) => {
     const { onClick } = props;
     return (
-      <div onClick={onClick} className=" carus top-[50%] absolute  right-6">
-        <IoIosArrowDropright className="w-[25px] shadow-lg cursor-pointer h-[25px] rounded-full bg-white text-slate-600" />
+      <div
+        onClick={onClick}
+        className="absolute z-10 top-1/2 right-2 transform -translate-y-1/2 bg-white p-2 rounded-full shadow-md cursor-pointer hover:bg-gray-200 transition"
+      >
+        <IoIosArrowDropright size={24} className="text-gray-800" />
       </div>
     );
-  }
+  };
 
-  function Prev_Photos(props: any) {
+  const PrevArrow = (props: any) => {
     const { onClick } = props;
     return (
-      <div onClick={onClick} className=" carus top-[50%] absolute  right-6">
-        <IoIosArrowDropright className="w-[25px] shadow-lg cursor-pointer h-[25px] rounded-full bg-white text-slate-600" />
+      <div
+        onClick={onClick}
+        className="absolute z-10 top-1/2 left-2 transform -translate-y-1/2 bg-white p-2 rounded-full shadow-md cursor-pointer hover:bg-gray-200 transition"
+      >
+        <IoIosArrowDropleft size={24} className="text-gray-800" />
       </div>
     );
-  }
+  };
 
-  const single_product = {
+  const sliderSettings = {
     dots: false,
     infinite: true,
     speed: 500,
     slidesToShow: 1,
     slidesToScroll: 1,
-    prevArrow: <Prev_Photos />,
-    nextArrow: <Next_Photos />,
+    nextArrow: <NextArrow />,
+    prevArrow: <PrevArrow />,
   };
+
   return (
-    <div>
-      <div className="product-img relative rounded-lg border border-transparent shadow-sm  hover:border-white hover:ring-2 hover:ring-white">
-    
-          <Slider {...single_product} className="relative">
-            {arr.map((items) => {
-              return (
-                <div className="xl:h-[240px] overflow-hidden rounded-lg">
-                  <LazyLoadImage
-                    src={Img}
-                    height="100%"
-                    width="100%"
-                    effect="blur"
-                    className="w-full h-full object-cover rounded-lg transition-all duration-500 ease-in-out transform hover:scale-110 hover:brightness-110"
-                  />
-                </div>
-              );
-            })}
+    <div className="w-full sm:w-[90%] md:w-[350px] mx-auto">
+      <div className="relative group overflow-hidden rounded-xl shadow-xl transition-all hover:shadow-2xl duration-300 border border-gray-300">
+        {/* Image Slider */}
+        <div className="relative h-[250px] w-full">
+          <Slider {...sliderSettings}>
+            {images.map((src, idx) => (
+              <div key={idx}>
+                <LazyLoadImage
+                  src={src}
+                  effect="blur"
+                  className="w-full h-[250px] object-cover transition-transform duration-500 group-hover:scale-105"
+                />
+              </div>
+            ))}
           </Slider>
 
-        <div className="p-4 bg-white rounded-b-lg">
+          {/* Hover Book Tag */}
+          <div className="absolute bottom-3 left-3 bg-white px-4 py-2 rounded-full text-sm font-medium shadow-md opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+            Book Now
+          </div>
+
+          {/* User profile pic with hover effect */}
+          <img
+            src={ProfilePic}
+            alt="Host"
+            className="absolute bottom-3 right-3 w-12 h-12 rounded-full border-4 border-white shadow-md transition-transform transform group-hover:scale-110 group-hover:border-indigo-500"
+          />
+        </div>
+
+        {/* Content */}
+        <div className="p-4 bg-white space-y-4">
           <div className="flex justify-between items-start">
-            <Link
-              to="/"
-              className="text-lg font-[500] transition-all duration-300 ease-in-out"
-            >
-              <span>
-                {service.textreducing(
-                  "helll wold new transformatoin going to impolement",
-                  18
-                )}
-              </span>
+            <Link to="/" className="text-lg font-semibold text-gray-800 hover:text-indigo-600 transition">
+              Beautiful Beachside Stay
             </Link>
-
-            <span className="flex items-center text-gray-800">
-              <CiStar className="text-yellow-700 text-[30px] text-bold px-1 drop-shadow-md" />
-              <b className="text-lg font-extrabold">5.0</b>
+            <span className="flex items-center gap-1 text-sm text-gray-700">
+              <CiStar className="text-yellow-500 text-xl" />
+              4.9
             </span>
           </div>
 
-          <div className="text-sm text-gray-700 mt-1 transition-opacity duration-300 hover:opacity-100">
-            Hosted by <span className=" font-bold">Shihab</span>
-          </div>
+          <div className="text-sm text-gray-600">Hosted by <span className="font-semibold">Shihab</span></div>
+          <div className="text-sm text-gray-500">Oct 4 - Oct 10</div>
 
-          <span className=" text-xs py-1 ">Oct 4 to Infinite</span>
-
-          <div className="  pt-1 flex justify-between items-center">
-            <span className="text-md text-indigo-900 font-bold">
-              $343 per day
+          <div className="flex justify-between items-center pt-2">
+            <span className="text-lg font-semibold text-indigo-800">
+              $343 <span className="text-sm text-gray-600">/ night</span>
             </span>
-
-            {/* ✅ Simple Button without too much styling */}
-            <button className="px-2 py-2 text-sm cursor-pointer bg-blue-600 text-white font-medium rounded-lg hover:bg-indigo-700 transition-all duration-300">
+            <button className="text-sm bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition">
               Book Now
             </button>
           </div>

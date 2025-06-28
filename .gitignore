@@ -10,6 +10,10 @@ server/node_modules/
 .env
 .env.*
 
+# Build output
+dist/
+build/
+out/
 # Logs
 logs/
 *.log
@@ -31,8 +35,14 @@ out/
 *.njsproj
 *.sln
 
+# Logs
+logs/
+*.log
+
 # Coverage
 coverage/
 
 # Misc
+*.local
+*.cache
 *.local
