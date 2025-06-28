@@ -70,6 +70,9 @@ const Login: React.FC<LoginProps> = ({ switchToSignup }) => {
       })
       .catch((err) => {
         console.error("Login failed:", err);
+       if(err.response?.data.message){
+        setErrors((prev) => ({ ...prev, unauthorized: err.response?.data.message }));
+       }
         if (err.response?.data?.error === "Email is required") {
           setErrors((prev) => ({ ...prev, email: "Email is required" }));
         } else if (err.response?.data?.error === "Password is required") {
