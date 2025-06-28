@@ -8,12 +8,11 @@ import Footer from "./pages/footer/Footer";
 import NotFound404 from "./pages/notfound/notfound404";
 
 function App() {
-  const [user , setUser] = useState();
-
+  const [user, setUser] = useState();
 
   return (
     <>
-      <GlobalContext.Provider value={{ user , setUser }}>
+      <GlobalContext.Provider value={{ user, setUser }}>
         <Router>
           <Header />
           <Routes>
@@ -21,7 +20,7 @@ function App() {
             <Route path="*" element={<NotFound404 />} />
           </Routes>
         </Router>
-        <Footer/>
+        <Footer />
       </GlobalContext.Provider>
     </>
   );

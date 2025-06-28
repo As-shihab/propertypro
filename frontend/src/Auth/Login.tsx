@@ -61,10 +61,10 @@ const Login: React.FC<LoginProps> = ({ switchToSignup }) => {
     setLoading(true);
 
     http
-      .post("/auth/login", user)
+      .post(http.authUrl +"/api/login", user)
       .then((res :any) => {
-        console.log( res.data.token);
-         http.saveToken("token", res.data.token);
+        console.log( res.data);
+         http.saveToken("token", res.data.User_token);
          location.reload();
         
       })

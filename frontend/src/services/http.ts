@@ -1,8 +1,9 @@
 import axios from "axios";
 axios.defaults.baseURL = "http://localhost:3000";
+
 export class httpClient {
   constructor() {}
-
+  authUrl = "http://127.0.0.1:8000";
   post(endpoint: string, data: object | any) {
     return axios.post(endpoint, data);
   }
