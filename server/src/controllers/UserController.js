@@ -1,9 +1,8 @@
-
 const { sendEmail } = require("../../config/email_sent");
 const upload = require("../../config/file_upload.config");
 const { prisma } = require("../../config/prisma.config");
 const { createToken, verifyToken } = require("../helpers/jsonwebtoken");
-const { makeHash,  compareHash} = require("../helpers/hash");
+const { makeHash, compareHash } = require("../helpers/hash");
 
 class UserController {
   constructor() {
@@ -43,22 +42,18 @@ class UserController {
   }
 
   async getUserById(req, res) {
-
     const { id } = req.params;
     try {
       const user = await prisma.user.findUnique({
-        where: { id: parseInt(id, 10) , 
-          
-        },
-        select:{
+        where: { id: parseInt(id, 10) },
+        select: {
           id: true,
           name: true,
           email: true,
           createdAt: true,
           updatedAt: true,
-          login_token: true, 
-          
-        }
+          login_token: true,
+        },
       });
       if (!user) {
         return res.status(404).json({ error: "User not found" });
@@ -87,16 +82,16 @@ class UserController {
     }
 
     try {
-          const hashed = await makeHash(password);
+      const hashed = await makeHash(password);
       const newUser = await prisma.user.create({
         data: {
           name,
           email,
-          password: hashed, 
+          password: hashed,
         },
       });
 
-      this.login(req, res); 
+      this.login(req, res);
       return;
     } catch (error) {
       if (error.code === "P2002" && error.meta?.target?.includes("email")) {
@@ -133,8 +128,6 @@ class UserController {
       if (!token) {
         return res.status(401).json({ error: "Unauthorized" });
       }
-
-   
     } catch (error) {
       console.error("Error logging out:", error);
       res.status(500).json({ error: "Internal server error" });
@@ -176,7 +169,7 @@ class UserController {
         where: { id: user.id },
         data: { login_token: token }, // Update last login time
       });
-      res.status(200).json({ message: "Login successful", token:token });
+      res.status(200).json({ message: "Login successful", token: token });
     } catch (error) {
       console.error("Error logging in user:", error);
       res.status(500).json({ error: "Internal server error" });
