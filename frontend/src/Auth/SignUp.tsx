@@ -4,17 +4,26 @@ import { motion } from "framer-motion";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { RiLoader4Fill } from "react-icons/ri";
 import { httpClient } from "../services/http";
+import { sentUserOtp } from "../config/OtpSender";
 
 type SignupProps = {
   switchToLogin: () => void;
+  switchOtp: () => void;
+  otpEmail?: (email: string) => void; // Optional callback to set email for OTP
 };
 
-const Signup: React.FC<SignupProps> = ({ switchToLogin }) => {
+const Signup: React.FC<SignupProps> = ({
+  switchToLogin,
+  switchOtp,
+  otpEmail,
+}) => {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [errors, setErrors] = useState<{ name?: string; email?: string; password?: string }>(
-    {}
-  );
+  const [errors, setErrors] = useState<{
+    name?: string;
+    email?: string;
+    password?: string;
+  }>({});
 
   const [user, setUser] = useState({
     name: "",
@@ -66,11 +75,21 @@ const Signup: React.FC<SignupProps> = ({ switchToLogin }) => {
     setLoading(true);
 
     http
-      .post(http.authUrl +"/api/signup", user)
+      .post(http.authUrl + "/api/signup", user)
       .then((res: any) => {
         console.log("Signup successful:", res.data);
-        // You can redirect or auto-login here
-        switchToLogin(); // Optionally switch to login form
+        http.saveToken("token", res.data.token);
+        if (localStorage.getItem("token")) {
+          sentUserOtp()
+            .then(() => {
+              otpEmail?.(user.email);
+              switchOtp();
+            })
+            .catch((err) => {
+              console.error("Failed to send OTP:", err);
+              switchToLogin();
+            });
+        }
       })
       .catch((err) => {
         console.error("Signup failed:", err);
@@ -82,9 +101,12 @@ const Signup: React.FC<SignupProps> = ({ switchToLogin }) => {
             password: errorMsg.password || errors.password,
           });
         } else {
-          setErrors({ name: "Signup failed", email: "Signup failed", password: "Signup failed" });
+          setErrors({
+            name: "Signup failed",
+            email: "Signup failed",
+            password: "Signup failed",
+          });
         }
- 
       })
       .finally(() => {
         setLoading(false);
@@ -102,7 +124,9 @@ const Signup: React.FC<SignupProps> = ({ switchToLogin }) => {
     >
       {/* Name */}
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Name</label>
+        <label className="block text-sm font-medium text-gray-700 mb-1">
+          Name
+        </label>
         <input
           type="text"
           className={`w-full px-4 py-2 border ${
@@ -111,12 +135,16 @@ const Signup: React.FC<SignupProps> = ({ switchToLogin }) => {
           value={user.name}
           onChange={(e) => handleChange("name", e.target.value)}
         />
-        {errors.name && <p className="text-sm text-red-500 mt-1">{errors.name}</p>}
+        {errors.name && (
+          <p className="text-sm text-red-500 mt-1">{errors.name}</p>
+        )}
       </div>
 
       {/* Email */}
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+        <label className="block text-sm font-medium text-gray-700 mb-1">
+          Email
+        </label>
         <input
           type="email"
           className={`w-full px-4 py-2 border ${
@@ -125,12 +153,16 @@ const Signup: React.FC<SignupProps> = ({ switchToLogin }) => {
           value={user.email}
           onChange={(e) => handleChange("email", e.target.value)}
         />
-        {errors.email && <p className="text-sm text-red-500 mt-1">{errors.email}</p>}
+        {errors.email && (
+          <p className="text-sm text-red-500 mt-1">{errors.email}</p>
+        )}
       </div>
 
       {/* Password */}
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
+        <label className="block text-sm font-medium text-gray-700 mb-1">
+          Password
+        </label>
         <div className="relative">
           <input
             type={showPassword ? "text" : "password"}
@@ -148,7 +180,9 @@ const Signup: React.FC<SignupProps> = ({ switchToLogin }) => {
             {showPassword ? <FaEyeSlash /> : <FaEye />}
           </button>
         </div>
-        {errors.password && <p className="text-sm text-red-500 mt-1">{errors.password}</p>}
+        {errors.password && (
+          <p className="text-sm text-red-500 mt-1">{errors.password}</p>
+        )}
       </div>
 
       {/* Sign Up Button */}

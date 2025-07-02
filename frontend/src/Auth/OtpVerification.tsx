@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 
-const OtpVerification: React.FC<{ email?: string }> = ({ email }) => {
+const OtpVerification: React.FC<{ email?: string  ,  }> = ({ email }) => {
   const [otp, setOtp] = useState(Array(6).fill(""));
 
   const handleChange = (value: string, index: number) => {
