@@ -1,10 +1,13 @@
-import React from "react";
+import React, { useContext } from "react";
 import { FaEdit, FaUserFriends, FaHeart, FaCamera } from "react-icons/fa";
 import { motion } from "framer-motion";
 import Img from "../../assets/images/loign.jpg"; // Adjust the path as necessary
 import {LazyLoadImage } from "react-lazy-load-image-component";
+import { GlobalContext } from "../../guard/GlobalContext";
 
 export default function ProfilePage() {
+  const {setGfilter}= useContext(GlobalContext)
+  setGfilter(false)
   return (
     <div className="min-h-screen bg-white p-6">
       <LazyLoadImage src={Img} alt="Profile Background" className="w-full h-60 object-cover mb-6 rounded-lg shadow-lg" />

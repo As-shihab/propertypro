@@ -1,23 +1,40 @@
 import axios from "axios";
+import { useContext } from "react";
+import { GlobalContext } from "../guard/GlobalContext";
 axios.defaults.baseURL = "http://localhost:3000";
+
+const axiosInstance = axios.create({
+  headers: {
+    "Content-Type": "application/json",
+    Authorization: localStorage.getItem("token")
+      ? `Bearer ` + localStorage.getItem("token")
+      : "",
+    "Access-Control-Allow-Origin": "*",
+  },
+});
 
 export class httpClient {
   constructor() {}
   authUrl = "http://127.0.0.1:8000";
-  post(endpoint: string, data: object | any) {
-    return axios.post(endpoint, data);
+  async post(endpoint: string, data: object | any) {
+    return axiosInstance.post(endpoint, data);
   }
 
-  get(endpoint: string) {
-    return axios.get(endpoint);
+  async get(endpoint: string) {
+    return axiosInstance.get(endpoint);
   }
 
-  put(endpoint: string, id: string | number, data: any | object) {
-    return axios.put(endpoint + "/" + id, data);
+  async put(endpoint: string, id: string | number, data: any | object) {
+    return axiosInstance.put(endpoint + "/" + id, data);
   }
 
-  delete(endpoint: string, id: string | number) {
-    return axios.delete(endpoint + "/" + id);
+  async delete(endpoint: string, id: string | number) {
+    return axiosInstance.delete(endpoint + "/" + id);
+  }
+
+  logout() {
+    localStorage.removeItem("token");
+    window.location.href = "/";
   }
 
   saveToken(name: string, token: string) {
@@ -32,4 +49,8 @@ export class httpClient {
   clearAllTokens() {
     localStorage.clear();
   }
+  isAuthenticated() {
+    return !!localStorage.getItem("token");
+  }
+
 }
