@@ -14,4 +14,5 @@ export const GlobalContext = createContext<any>({
     switchToLogin: () => {},
     switchToProfile: () => {},
     switchToHome: () => {}, 
+    setGfilter:()=>{}
 });

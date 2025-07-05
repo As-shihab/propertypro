@@ -1,8 +1,12 @@
+import { useContext } from "react";
 import GlobalFilter from "../../components/GlobalFilter/GlobalFilter";
 import Card from "../../components/procard/Card";
+import { GlobalContext } from "../../guard/GlobalContext";
 export default function PropertyPro() {
-
+ const {setGfilter} = useContext(GlobalContext)
+   setGfilter(true);
   let arr = Array.from({length: 9} , (_, i)=>{i+1})
+
   return (
     <div>
       <GlobalFilter />

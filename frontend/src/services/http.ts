@@ -1,10 +1,14 @@
 import axios from "axios";
+import { useContext } from "react";
+import { GlobalContext } from "../guard/GlobalContext";
 axios.defaults.baseURL = "http://localhost:3000";
 
 const axiosInstance = axios.create({
   headers: {
     "Content-Type": "application/json",
-    'Authorization': localStorage.getItem("token")? `Bearer ` + localStorage.getItem("token") : "",
+    Authorization: localStorage.getItem("token")
+      ? `Bearer ` + localStorage.getItem("token")
+      : "",
     "Access-Control-Allow-Origin": "*",
   },
 });
@@ -12,23 +16,23 @@ const axiosInstance = axios.create({
 export class httpClient {
   constructor() {}
   authUrl = "http://127.0.0.1:8000";
- async post(endpoint: string, data: object | any) {
+  async post(endpoint: string, data: object | any) {
     return axiosInstance.post(endpoint, data);
   }
 
- async get(endpoint: string) {
+  async get(endpoint: string) {
     return axiosInstance.get(endpoint);
   }
 
- async put(endpoint: string, id: string | number, data: any | object) {
+  async put(endpoint: string, id: string | number, data: any | object) {
     return axiosInstance.put(endpoint + "/" + id, data);
   }
 
- async delete(endpoint: string, id: string | number) {
+  async delete(endpoint: string, id: string | number) {
     return axiosInstance.delete(endpoint + "/" + id);
   }
 
-  logout(){
+  logout() {
     localStorage.removeItem("token");
     window.location.href = "/";
   }
@@ -45,4 +49,8 @@ export class httpClient {
   clearAllTokens() {
     localStorage.clear();
   }
+  isAuthenticated() {
+    return !!localStorage.getItem("token");
+  }
+
 }

@@ -65,10 +65,7 @@ const Login: React.FC<LoginProps> = ({ switchToSignup }) => {
       .then((res :any) => {
         console.log( res.data);
          http.saveToken("token", res.data.token);
-         if(http.getToken("token")){
-           
-         }
-        
+         location.reload();
       })
       .catch((err) => {
         console.error("Login failed:", err);

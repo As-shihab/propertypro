@@ -29,6 +29,7 @@ const Signup: React.FC<SignupProps> = ({
     name: "",
     email: "",
     password: "",
+    platform:"PROPERTYPRO",
   });
 
   const http = new httpClient();
@@ -64,7 +65,7 @@ const Signup: React.FC<SignupProps> = ({
     setErrors((prev) => ({ ...prev, [field]: error }));
   };
 
-  const onSignup =async () => {
+  const onSignup = async () => {
     const nameError = validateName(user.name);
     const emailError = validateEmail(user.email);
     const passwordError = validatePassword(user.password);
@@ -74,25 +75,11 @@ const Signup: React.FC<SignupProps> = ({
 
     setLoading(true);
 
-  await  http
+    await http
       .post(http.authUrl + "/api/signup", user)
       .then((res: any) => {
-        console.log("Signup successful:", res.data);
         http.saveToken("token", res.data.token);
-        setTimeout(() => {
-          if (localStorage.getItem("token")) {
-        sentUserOtp()
-              .then(() => {
-                otpEmail?.(user.email);
-                switchOtp();
-              })
-              .catch((err) => {
-                console.error("Failed to send OTP:", err);
-                console.log(http.getToken("token") ,'auth token');
-                switchToLogin();
-              });
-          }
-        });
+        location.reload();
       })
       .catch((err) => {
         console.error("Signup failed:", err);
