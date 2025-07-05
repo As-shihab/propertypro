@@ -9,7 +9,7 @@ export default function PropertyPro() {
 
       {/* card view */}
 
-      <div className="w-[98%] grid gap-3 mt-4 grid-cols-4 m-auto">
+      <div className="w-[98%] grid grid-cols-5 gap-4 m-auto mt-10">
         {
           arr.map(() => {
             return(
