@@ -9,6 +9,7 @@ const OtpVerification: React.FC<{ email?: string }> = ({ email }) => {
   const [otp, setOtp] = useState(Array(6).fill(""));
   const [loading, setLoading] = useState(false);
   const [isSentLoading, setSentLoading] = useState(false);
+  const [isDisable, setDisable] = useState(false);
   const [message, setMessage] = useState("");
   const { user } = useContext(GlobalContext);
   const handleChange = (value: string, index: number) => {
@@ -24,16 +25,13 @@ const OtpVerification: React.FC<{ email?: string }> = ({ email }) => {
   };
 
   const HandleVerifyOtp = async () => {
+    const otpString = otp.join("");
+    if (otpString.length < 6) {
+      setDisable(true);
+    }
+
     try {
       setLoading(true);
-      const otpString = otp.join("");
-      if (otpString.length < 6) {
-        setMessage("Please enter a complete 6-digit OTP.");
-        return;
-      }
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      alert(`OTP Verified: ${otpString}`);
     } catch (error) {
       console.error("Error verifying OTP:", error);
       alert("Failed to verify OTP. Please try again.");
@@ -54,13 +52,12 @@ const OtpVerification: React.FC<{ email?: string }> = ({ email }) => {
     try {
       const res = await sentUserOtp(); // your API call
       email = user?.data?.email;
-      setMessage("We have sent 6 digit code");
-
       // Set local cooldown for 5 minutes
       const expiry = Date.now() + 60 * 1000;
       localStorage.setItem("otpCooldown", expiry.toString());
     } catch (err) {
       console.error("OTP send failed", err);
+      setMessage("Faild to sent otp");
     } finally {
       setSentLoading(false);
     }
@@ -106,9 +103,15 @@ const OtpVerification: React.FC<{ email?: string }> = ({ email }) => {
       exit={{ opacity: 0, y: 10 }}
       transition={{ duration: 0.3 }}
     >
-      <h2 className="text-lg font-semibold text-center mb-4">
-        Verify your account
-      </h2>
+      {message ? (
+        <h2 className="text-lg font-semibold text-red-400 text-center mb-4">
+          {message}
+        </h2>
+      ) : (
+        <h2 className="text-lg font-semibold text-center mb-4">
+          Verify your account
+        </h2>
+      )}
       {isSentLoading ? (
         <div className="flex flex-col items-center gap-2 py-6">
           <RiMailSendLine className="text-4xl text-blue-600 animate-bounce" />
@@ -161,9 +164,9 @@ const OtpVerification: React.FC<{ email?: string }> = ({ email }) => {
       )}
 
       <p className="text-center text-sm text-gray-600">
-        Didn’t receive it?{" "}
+        Didn’t receive it?{"  "}
         {cooldownLeft ? (
-          `Try after ${cooldownLeft} Seconds`
+          <b>Try after {cooldownLeft} Seconds</b>
         ) : (
           <button
             onClick={SentOtp}
