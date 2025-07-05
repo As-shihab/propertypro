@@ -10,6 +10,8 @@ import Login from "./Auth/Login"; // Login Page
 import ProfilePage from "./Auth/profile/profile";
 import { httpClient } from "./services/http";
 import { useFetchUser } from "./config/GetUserFromServer";
+import Propertys from "./pages/propertys/Propertys";
+import GlobalFilter from "./components/GlobalFilter/GlobalFilter";
 function App() {
   const [user, setUser] = useState();
   const [loading, setLoading] = useState(false);
@@ -44,7 +46,18 @@ function App() {
         <Routes>
           {/* Public routes */}
           <Route path="/" element={<PropertyPro />} />
+
+
+       <Route path="/propetys" element={<Propertys/>}>
+  
+       </Route>
+
+
+
           <Route path="/login" element={<Login switchToSignup={() => {}} />} />
+
+
+
           <Route path="/profile" element={<ProfilePage />} />
           <Route path="*" element={<NotFound404 />} />
         </Routes>

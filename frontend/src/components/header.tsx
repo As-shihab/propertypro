@@ -26,7 +26,7 @@ export default function Header() {
   const [mode, setMode] = useState<"login" | "signup" | "otp">("login");
   const [email, setEmail] = useState<string>("");
   const http = new httpClient();
-  const { user , setGfilter , gfilter} = useContext(GlobalContext);
+  const { user, setGfilter, gfilter } = useContext(GlobalContext);
 
   const handleClose = () => {
     setOpen(false);
@@ -51,13 +51,22 @@ export default function Header() {
     <header className="border-b pb-3 border-slate-200">
       {/* Top Navigation */}
       <div className="flex items-center cursor-pointer justify-around list-none py-3">
-        <h1 onClick={()=>{location.href='/'}}>PropertyPro</h1>
+        <h1
+          onClick={() => {
+            location.href = "/";
+          }}
+        >
+          PropertyPro
+        </h1>
 
         <div className="flex gap-3">
           <li className="nav cursor-pointer">
             <NavLink to="/">Stays</NavLink>
           </li>
-          <li  className="nav cursor-pointer">Properties</li>
+          <li className="nav cursor-pointer">
+            {" "}
+            <NavLink to="/propertys">Propertys</NavLink>
+          </li>
         </div>
 
         <div className="flex items-center gap-3">
@@ -91,8 +100,7 @@ export default function Header() {
                 <div className="py-2 divide-y divide-slate-200">
                   {/* Verify Email */}
 
-                  { 
-                  http.isAuthenticated() && !user.data?.email_verified ? (
+                  {http.isAuthenticated() && !user?.data?.email_verified ? (
                     <button
                       onClick={() => {
                         setMode("otp");
@@ -105,8 +113,13 @@ export default function Header() {
                       <FaEnvelope className="text-slate-500 text-xl" /> Verify
                       Email
                     </button>
-                  ) : http.isAuthenticated() && user?.data.email_verified? (
-                    <Link to="/profile" onClick={()=>{setDropdownOpen(false)}}>
+                  ) : http.isAuthenticated() && user?.data?.email_verified ? (
+                    <Link
+                      to="/profile"
+                      onClick={() => {
+                        setDropdownOpen(false);
+                      }}
+                    >
                       <button
                         className="flex items-center gap-2  w-full text-left px-5 py-2.5 text-md text-slate-700 hover:bg-slate-100 transition rounded-md"
                         role="menuitem"
@@ -115,7 +128,7 @@ export default function Header() {
                         Profile
                       </button>
                     </Link>
-                  ):null}
+                  ) : null}
 
                   {/* Login */}
 
@@ -199,37 +212,35 @@ export default function Header() {
       </div>
 
       {/* Search Bar */}
-     {
-      gfilter?(
-         <div className="w-full text-center text-slate-600">
-        <div className="w-[60%] m-auto border p-2 px-5 border-slate-200 rounded-full">
-          <div className="grid grid-cols-3 gap-3">
-            <div className="flex cursor-pointer flex-col">
-              <span>Filter your location</span>
-              <span className="text-xs">click to filter location</span>
-            </div>
-
-            <div className="flex cursor-pointer gap-4">
-              <div className="flex flex-col gap-1">
-                <div>Check In</div>
-                <span className="text-xs">Select date</span>
+      {gfilter ? (
+        <div className="w-full text-center text-slate-600">
+          <div className="w-[60%] m-auto border p-2 px-5 border-slate-200 rounded-full">
+            <div className="grid grid-cols-3 gap-3">
+              <div className="flex cursor-pointer flex-col">
+                <span>Filter your location</span>
+                <span className="text-xs">click to filter location</span>
               </div>
 
-              <div className="flex flex-col gap-1">
-                <div>Check Out</div>
-                <span className="text-xs">Select date</span>
-              </div>
-            </div>
+              <div className="flex cursor-pointer gap-4">
+                <div className="flex flex-col gap-1">
+                  <div>Check In</div>
+                  <span className="text-xs">Select date</span>
+                </div>
 
-            <div className="flex cursor-pointer flex-col">
-              <span>Guests</span>
-              <span className="text-xs">Add guests</span>
+                <div className="flex flex-col gap-1">
+                  <div>Check Out</div>
+                  <span className="text-xs">Select date</span>
+                </div>
+              </div>
+
+              <div className="flex cursor-pointer flex-col">
+                <span>Guests</span>
+                <span className="text-xs">Add guests</span>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-      ):null
-     }
+      ) : null}
 
       {/* Auth Dialog */}
       <Dialog
