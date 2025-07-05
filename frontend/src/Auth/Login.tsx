@@ -108,7 +108,7 @@ const Login: React.FC<LoginProps> = ({ switchToSignup }) => {
         </label>
         <input
           type="text"
-          placeholder="example@email.com or +8801xxxxxxx"
+          placeholder="Enter your email or phone"
           className={`w-full px-4 py-2 border ${
             errors.email ? "border-red-500" : "border-gray-300"
           } rounded-md`}
@@ -128,7 +128,7 @@ const Login: React.FC<LoginProps> = ({ switchToSignup }) => {
         <div className="relative">
           <input
             type={showPassword ? "text" : "password"}
-            placeholder="••••••••"
+            placeholder="Enter your password"
             className={`w-full px-4 py-2 border ${
               errors.password ? "border-red-500" : "border-gray-300"
             } rounded-md pr-10`}

@@ -129,6 +129,7 @@ const Signup: React.FC<SignupProps> = ({
           Name
         </label>
         <input
+          placeholder="Enter your name"
           type="text"
           className={`w-full px-4 py-2 border ${
             errors.name ? "border-red-500" : "border-gray-300"
@@ -147,6 +148,7 @@ const Signup: React.FC<SignupProps> = ({
           Email
         </label>
         <input
+          placeholder="type to email"
           type="email"
           className={`w-full px-4 py-2 border ${
             errors.email ? "border-red-500" : "border-gray-300"
@@ -166,6 +168,7 @@ const Signup: React.FC<SignupProps> = ({
         </label>
         <div className="relative">
           <input
+            placeholder="Enter your password"
             type={showPassword ? "text" : "password"}
             className={`w-full px-4 py-2 border ${
               errors.password ? "border-red-500" : "border-gray-300"
