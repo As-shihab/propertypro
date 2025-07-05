@@ -13,7 +13,7 @@ export default function PropertyPro() {
         {
           arr.map(() => {
             return(
- <Card />
+ <Card/>
             )
           })
         }

@@ -1,6 +1,6 @@
 import { httpClient } from "../services/http";
 
-export const sentUserOtp = () => {
+export const sentUserOtp = async () => {
   const http = new httpClient();
-  return http.post(http.authUrl + "/api/user/sent-otp", {});
+  return await http.post(http.authUrl + "/api/user/sent-otp", {});
 };

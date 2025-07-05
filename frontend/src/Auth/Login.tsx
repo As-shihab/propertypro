@@ -64,8 +64,10 @@ const Login: React.FC<LoginProps> = ({ switchToSignup }) => {
       .post(http.authUrl +"/api/login", user)
       .then((res :any) => {
         console.log( res.data);
-         http.saveToken("token", res.data.User_token);
-         location.reload();
+         http.saveToken("token", res.data.token);
+         if(http.getToken("token")){
+           
+         }
         
       })
       .catch((err) => {

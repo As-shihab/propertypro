@@ -64,7 +64,7 @@ const Signup: React.FC<SignupProps> = ({
     setErrors((prev) => ({ ...prev, [field]: error }));
   };
 
-  const onSignup = () => {
+  const onSignup =async () => {
     const nameError = validateName(user.name);
     const emailError = validateEmail(user.email);
     const passwordError = validatePassword(user.password);
@@ -74,22 +74,25 @@ const Signup: React.FC<SignupProps> = ({
 
     setLoading(true);
 
-    http
+  await  http
       .post(http.authUrl + "/api/signup", user)
       .then((res: any) => {
         console.log("Signup successful:", res.data);
         http.saveToken("token", res.data.token);
-        if (localStorage.getItem("token")) {
-          sentUserOtp()
-            .then(() => {
-              otpEmail?.(user.email);
-              switchOtp();
-            })
-            .catch((err) => {
-              console.error("Failed to send OTP:", err);
-              switchToLogin();
-            });
-        }
+        setTimeout(() => {
+          if (localStorage.getItem("token")) {
+        sentUserOtp()
+              .then(() => {
+                otpEmail?.(user.email);
+                switchOtp();
+              })
+              .catch((err) => {
+                console.error("Failed to send OTP:", err);
+                console.log(http.getToken("token") ,'auth token');
+                switchToLogin();
+              });
+          }
+        });
       })
       .catch((err) => {
         console.error("Signup failed:", err);
@@ -102,9 +105,7 @@ const Signup: React.FC<SignupProps> = ({
           });
         } else {
           setErrors({
-            name: "Signup failed",
             email: "Signup failed",
-            password: "Signup failed",
           });
         }
       })

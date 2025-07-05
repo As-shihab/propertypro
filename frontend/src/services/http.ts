@@ -4,7 +4,7 @@ axios.defaults.baseURL = "http://localhost:3000";
 const axiosInstance = axios.create({
   headers: {
     "Content-Type": "application/json",
-    'token': localStorage.getItem("token")? `Bearer ` + localStorage.getItem("token") : "",
+    'Authorization': localStorage.getItem("token")? `Bearer ` + localStorage.getItem("token") : "",
     "Access-Control-Allow-Origin": "*",
   },
 });
@@ -12,20 +12,25 @@ const axiosInstance = axios.create({
 export class httpClient {
   constructor() {}
   authUrl = "http://127.0.0.1:8000";
-  post(endpoint: string, data: object | any) {
+ async post(endpoint: string, data: object | any) {
     return axiosInstance.post(endpoint, data);
   }
 
-  get(endpoint: string) {
+ async get(endpoint: string) {
     return axiosInstance.get(endpoint);
   }
 
-  put(endpoint: string, id: string | number, data: any | object) {
+ async put(endpoint: string, id: string | number, data: any | object) {
     return axiosInstance.put(endpoint + "/" + id, data);
   }
 
-  delete(endpoint: string, id: string | number) {
+ async delete(endpoint: string, id: string | number) {
     return axiosInstance.delete(endpoint + "/" + id);
+  }
+
+  logout(){
+    localStorage.removeItem("token");
+    window.location.href = "/";
   }
 
   saveToken(name: string, token: string) {
