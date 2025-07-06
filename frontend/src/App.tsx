@@ -56,8 +56,6 @@ function App() {
 
           <Route path="/login" element={<Login switchToSignup={() => {}} />} />
 
-
-
           <Route path="/profile" element={<ProfilePage />} />
           <Route path="*" element={<NotFound404 />} />
         </Routes>

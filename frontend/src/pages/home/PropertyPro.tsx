@@ -15,20 +15,16 @@ export default function PropertyPro() {
   const [loading, setLoading] = useState(false);
   // const { scrollY, scrollX,direction,isBottom,} = useScrollInfo();
   // const {ip} = useGeoLocation();
-  const get = async()=>{
-     const res = await fetch("https://ipapi.co/json/");
-        let response = res.json();
-        console.log(response)
-  }
 
-  console.log(useGeoLocation())
+
+
+
+
+console.log(useGeoLocation() , 'use info')
 
   let arr = Array.from({ length: limit }, (_, i) => {
     i + 1;
   });
-
-  const fetchData = async () => {console.log('data fetch' ,limit , skip)};
-
 
   return (
     <div>
