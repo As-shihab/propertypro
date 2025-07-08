@@ -100,34 +100,34 @@ export default function Header() {
                 <div className="py-2 divide-y divide-slate-200">
                   {/* Verify Email */}
 
-                  {http.isAuthenticated() && !user?.data?.email_verified ? (
-                    <button
-                      onClick={() => {
-                        setMode("otp");
-                        setOpen(true);
-                        setDropdownOpen(false);
-                      }}
-                      className="flex items-center gap-2  w-full text-left px-5 py-2.5 text-md text-slate-700 hover:bg-slate-100 transition rounded-md"
-                      role="menuitem"
-                    >
-                      <FaEnvelope className="text-slate-500 text-xl" /> Verify
-                      Email
-                    </button>
-                  ) : http.isAuthenticated() && user?.data?.email_verified ? (
-                    <Link
-                      to="/profile"
-                      onClick={() => {
-                        setDropdownOpen(false);
-                      }}
-                    >
+                  {http.isAuthenticated() && user ? (
+                    !user.data?.email_verified ? (
                       <button
-                        className="flex items-center gap-2  w-full text-left px-5 py-2.5 text-md text-slate-700 hover:bg-slate-100 transition rounded-md"
+                        onClick={() => {
+                          setMode("otp");
+                          setOpen(true);
+                          setDropdownOpen(false);
+                        }}
+                        className="flex items-center gap-2 w-full text-left px-5 py-2.5 text-md text-slate-700 hover:bg-slate-100 transition rounded-md"
                         role="menuitem"
                       >
-                        <FaUserCheck className="text-slate-500 text-xl" />
-                        Profile
+                        <FaEnvelope className="text-slate-500 text-xl" /> Verify
+                        Email
                       </button>
-                    </Link>
+                    ) : (
+                      <Link
+                        to="/profile"
+                        onClick={() => setDropdownOpen(false)}
+                      >
+                        <button
+                          className="flex items-center gap-2 w-full text-left px-5 py-2.5 text-md text-slate-700 hover:bg-slate-100 transition rounded-md"
+                          role="menuitem"
+                        >
+                          <FaUserCheck className="text-slate-500 text-xl" />
+                          Profile
+                        </button>
+                      </Link>
+                    )
                   ) : null}
 
                   {/* Login */}

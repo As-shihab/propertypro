@@ -1,62 +1,40 @@
 import { useEffect, useState } from "react";
 
-interface GeoLocationInfo {
-  ip: string;
-  city: string;
-  region: string;
-  country: string;
-  latitude: number;
-  longitude: number;
-  timezone: string;
-  org: string;
-  isLoaded: boolean;
-  error?: string;
-  data:object;
-}
-
-export const useGeoLocation = (): GeoLocationInfo => {
-  const [info, setInfo] = useState<GeoLocationInfo>({
-    ip: "",
-    city: "",
-    region: "",
-    country: "",
-    latitude: 0,
-    longitude: 0,
-    timezone: "",
-    org: "",
-    isLoaded: false,
-    data:{}
-  });
+export const useGeoLocation = () => {
+  const [data, setData] = useState<object | null>(null);
 
   useEffect(() => {
-    const fetchLocation = async () => {
-      try {
-        const res = await fetch("https://ipwho.is/");
-        const data = await res.json();
+    if (!navigator.geolocation) {
+      setData({ error: "Geolocation is not supported by your browser" });
+      return;
+    }
 
-        setInfo({
-          ip: data.ip,
-          city: data.city,
-          region: data.region,
-          country: data.country_name,
-          latitude: data.latitude,
-          longitude: data.longitude,
-          timezone: data.timezone,
-          org: data.org,
-          isLoaded: true,
-          data:data
-        });
-      } catch (err) {
-        setInfo((prev) => ({
-          ...prev,
-          error: "Failed to fetch location",
-          isLoaded: true,
-        }));
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        const { latitude, longitude } = position.coords;
+
+        try {
+          const res = await fetch(
+            `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json`
+          );
+          const locationData = await res.json();
+
+          setData({
+            latitude,
+            longitude,
+            address: locationData.address,
+            display_name: locationData.display_name,
+            raw: locationData,
+          });
+        } catch (err) {
+          setData({ error: "Failed to reverse geocode location" });
+        }
+      },
+      (error) => {
+        setData({ error: error.message });
       }
-    };
-
-    fetchLocation();
+    );
   }, []);
 
-  return info;
+  return data;
 };

@@ -16,11 +16,7 @@ export default function PropertyPro() {
   // const { scrollY, scrollX,direction,isBottom,} = useScrollInfo();
   // const {ip} = useGeoLocation();
 
-
-
-
-
-console.log(useGeoLocation() , 'use info')
+  console.log(useGeoLocation(), "use info");
 
   let arr = Array.from({ length: limit }, (_, i) => {
     i + 1;

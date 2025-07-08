@@ -11,7 +11,6 @@ import ProfilePage from "./Auth/profile/profile";
 import { httpClient } from "./services/http";
 import { useFetchUser } from "./config/GetUserFromServer";
 import Propertys from "./pages/propertys/Propertys";
-import GlobalFilter from "./components/GlobalFilter/GlobalFilter";
 function App() {
   const [user, setUser] = useState();
   const [loading, setLoading] = useState(false);
@@ -30,7 +29,6 @@ function App() {
     fetchUser()
       .then((data) => {
         setUser(data);
-        console.log("User data set in context:", data);
       })
       .catch((error) => {
         console.error("Error fetching user data:", error);
@@ -47,12 +45,7 @@ function App() {
           {/* Public routes */}
           <Route path="/" element={<PropertyPro />} />
 
-
-       <Route path="/propetys" element={<Propertys/>}>
-  
-       </Route>
-
-
+          <Route path="/propetys" element={<Propertys />}></Route>
 
           <Route path="/login" element={<Login switchToSignup={() => {}} />} />
 
