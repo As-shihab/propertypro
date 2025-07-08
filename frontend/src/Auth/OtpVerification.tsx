@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { RiLoader4Fill, RiMailSendLine } from "react-icons/ri";
 import { sentUserOtp } from "../config/OtpSender";
 import { GlobalContext } from "../guard/GlobalContext";
+import { httpClient } from "../services/http";
 
 const OtpVerification: React.FC<{ email?: string }> = ({ email }) => {
   const [otp, setOtp] = useState(Array(6).fill(""));
@@ -12,6 +13,7 @@ const OtpVerification: React.FC<{ email?: string }> = ({ email }) => {
   const [isDisable, setDisable] = useState(false);
   const [message, setMessage] = useState("");
   const { user } = useContext(GlobalContext);
+  const http = new httpClient();
   const handleChange = (value: string, index: number) => {
     if (!/^[0-9]?$/.test(value)) return;
 
@@ -29,15 +31,18 @@ const OtpVerification: React.FC<{ email?: string }> = ({ email }) => {
     if (otpString.length < 6) {
       setDisable(true);
     }
-
-    try {
-      setLoading(true);
-    } catch (error) {
-      console.error("Error verifying OTP:", error);
-      alert("Failed to verify OTP. Please try again.");
-    } finally {
-      setLoading(false);
-    }
+    setLoading(true);
+    setMessage("");
+    await http
+      .post(http.authUrl + "/api/user/verify-otp", { otp: otpString })
+      .then((res) => {})
+      .catch((err) => {
+        console.error(err.response.data.message);
+        setMessage(err.response.data.message);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   };
 
   const SentOtp = async () => {
@@ -55,6 +60,8 @@ const OtpVerification: React.FC<{ email?: string }> = ({ email }) => {
       // Set local cooldown for 5 minutes
       const expiry = Date.now() + 60 * 1000;
       localStorage.setItem("otpCooldown", expiry.toString());
+      setOtp(Array(6).fill(""));
+      setMessage("");
     } catch (err) {
       console.error("OTP send failed", err);
       setMessage("Faild to sent otp");
