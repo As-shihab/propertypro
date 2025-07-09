@@ -1,6 +1,4 @@
 import axios from "axios";
-import { useContext } from "react";
-import { GlobalContext } from "../guard/GlobalContext";
 axios.defaults.baseURL = "http://localhost:3000";
 
 const axiosInstance = axios.create({

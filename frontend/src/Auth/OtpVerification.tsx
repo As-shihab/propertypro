@@ -16,11 +16,11 @@ const OtpVerification: React.FC<{ email?: string }> = ({ email }) => {
   const http = new httpClient();
   const handleChange = (value: string, index: number) => {
     if (!/^[0-9]?$/.test(value)) return;
-
+   console.log(isDisable, "isDisable");
     const newOtp = [...otp];
     newOtp[index] = value;
     setOtp(newOtp);
-
+       console.log(email, "email");
     // Auto focus to next input
     const nextInput = document.getElementById(`otp-${index + 1}`);
     if (value && nextInput) (nextInput as HTMLInputElement).focus();
@@ -35,7 +35,7 @@ const OtpVerification: React.FC<{ email?: string }> = ({ email }) => {
     setMessage("");
     await http
       .post(http.authUrl + "/api/user/verify-otp", { otp: otpString })
-      .then((res) => {})
+      .then((res) => {console.log(res.data, "res");})
       .catch((err) => {
         console.error(err.response.data.message);
         setMessage(err.response.data.message);
@@ -55,7 +55,7 @@ const OtpVerification: React.FC<{ email?: string }> = ({ email }) => {
 
     setSentLoading(true);
     try {
-      const res = await sentUserOtp(); // your API call
+      await sentUserOtp(); // your API call
       email = user?.data?.email;
       // Set local cooldown for 5 minutes
       const expiry = Date.now() + 60 * 1000;

@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import  { useContext } from "react";
 import { FaEdit, FaUserFriends, FaHeart, FaCamera } from "react-icons/fa";
 import { motion } from "framer-motion";
 import Img from "../../assets/images/loign.jpg"; // Adjust the path as necessary

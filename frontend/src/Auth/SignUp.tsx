@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { RiLoader4Fill } from "react-icons/ri";
 import { httpClient } from "../services/http";
-import { sentUserOtp } from "../config/OtpSender";
+
 
 type SignupProps = {
   switchToLogin: () => void;
@@ -14,8 +14,7 @@ type SignupProps = {
 
 const Signup: React.FC<SignupProps> = ({
   switchToLogin,
-  switchOtp,
-  otpEmail,
+
 }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);

@@ -26,7 +26,7 @@ export default function Header() {
   const [mode, setMode] = useState<"login" | "signup" | "otp">("login");
   const [email, setEmail] = useState<string>("");
   const http = new httpClient();
-  const { user, setGfilter, gfilter } = useContext(GlobalContext);
+  const { user, gfilter } = useContext(GlobalContext);
 
   const handleClose = () => {
     setOpen(false);

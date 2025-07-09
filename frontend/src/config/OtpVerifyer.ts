@@ -1,6 +1,6 @@
 import { httpClient } from "../services/http";
 
-const VerifyOtp = async (otp: string) => {
+export const VerifyOtp = async (otp: string) => {
   const http = new httpClient();
   try {
     const response = await http.post(http.authUrl + "/api/user/verify-otp", { otp });
@@ -10,3 +10,5 @@ const VerifyOtp = async (otp: string) => {
     throw error;
   }
 }
+
+

@@ -1,18 +1,18 @@
-import { useContext, useEffect, useState } from "react";
+import {  useState } from "react";
 import GlobalFilter from "../../components/GlobalFilter/GlobalFilter";
 import Card from "../../components/card/Card";
-import { GlobalContext } from "../../guard/GlobalContext";
-import { useScrollInfo } from "../../helpers/scrollWatcher";
+// import { GlobalContext } from "../../guard/GlobalContext";
+// import { useScrollInfo } from "../../helpers/scrollWatcher";
 import { useGeoLocation } from "../../helpers/geoLocation";
-import { httpClient } from "../../services/http";
+// import { httpClient } from "../../services/http";
 export default function PropertyPro() {
-  const http = new httpClient();
-  const { setGfilter } = useContext(GlobalContext);
-  const [data, setData] = useState<any[]>([]);
-  const [skip, setSkip] = useState(0);
+  // const http = new httpClient();
+  // const { setGfilter } = useContext(GlobalContext);
+  // const [data, setData] = useState<any[]>([]);
+  // const [skip, setSkip] = useState(0);
   const [limit] = useState(10); // items per fetch
-  const [hasMore, setHasMore] = useState(true);
-  const [loading, setLoading] = useState(false);
+  // const [hasMore, setHasMore] = useState(true);
+  // const [loading, setLoading] = useState(false);
   // const { scrollY, scrollX,direction,isBottom,} = useScrollInfo();
   // const {ip} = useGeoLocation();
 
