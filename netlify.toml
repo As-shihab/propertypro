@@ -2,9 +2,9 @@
 
 [build]
   base = "frontend"                # The root directory of your React app (frontend/)
-  publish = "frontend/dist"         # The directory containing the build output (frontend/dist)
+  publish = "dist"                  # The directory containing the build output (dist)
   command = "npm run build"         # Build command for Vite
-  functions = "frontend/netlify/functions"  # Optional: where Netlify functions are located
+  functions = "netlify/functions"   # Optional: where Netlify functions are located
 
 [[redirects]]
   from = "/*"                       # Redirect all routes to index.html
