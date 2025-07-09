@@ -1,12 +1,12 @@
 # netlify.toml
 
 [build]
-  base = "frontend"            # Set base directory to frontend
-  publish = "frontend/dist"     # Use dist for Vite's output folder
-  command = "npm run build"     # Vite build command
-  functions = "netlify/functions"  # Optional: For serverless functions
+  base = "frontend"                # The root directory of your React app (frontend/)
+  publish = "frontend/dist"         # The directory containing the build output (frontend/dist)
+  command = "npm run build"         # Build command for Vite
+  functions = "frontend/netlify/functions"  # Optional: where Netlify functions are located
 
 [[redirects]]
-  from = "/*"                  # Redirect all routes
-  to = "/index.html"           # Serve index.html for all routes
-  status = 200                 # Status 200 means success
+  from = "/*"                       # Redirect all routes to index.html
+  to = "/index.html"                # For React Router to work
+  status = 200                      # HTTP status 200 (success)
