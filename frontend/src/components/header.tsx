@@ -55,7 +55,18 @@ export default function Header() {
           onClick={() => {
             location.href = "/";
           }}
+          className="flex items-center text-3xl font-bold text-blue-600 cursor-pointer uppercase tracking-wider transition-all duration-300 transform hover:text-blue-800 hover:scale-110"
         >
+          <svg
+            className="w-8 h-8 mr-3"
+            fill="currentColor"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path d="M12 2L2 7l1.5 1.5L12 4l8.5 4.5L22 7l-10-5z" />
+            <path d="M12 12l-8.5 4.5L2 17l10 5 10-5-1.5-1.5L12 12z" />
+          </svg>
           PropertyPro
         </h1>
 
