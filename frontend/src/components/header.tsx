@@ -88,6 +88,7 @@ export default function Header() {
 
           <div className="relative" ref={menuRef}>
             {/* Avatar Button */}
+            
             <div
               className="rounded-full flex cursor-pointer py-2 px-4 items-center gap-3 shadow-md hover:shadow-lg transition duration-200 bg-white border"
               onClick={() => setDropdownOpen((prev) => !prev)}
