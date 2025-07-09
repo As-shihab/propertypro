@@ -1,6 +1,6 @@
 # 🏨 My PropertyPro
 
-### 🌐 Live: [my-propertypro.netlify.app](https://my-propertypro.netlify.app)
+### 🌐 Live: [my-propertypro.netlify.app](https://shihabcloud.netlify.app)
 
 A modern and elegant hotel booking platform built with a focus on simplicity, responsiveness, and user-friendly design.
 
@@ -18,7 +18,7 @@ A modern and elegant hotel booking platform built with a focus on simplicity, re
 
 ## 🖼️ Preview
 
-![Preview Screenshot](https://my-propertypro.netlify.app/preview.png) <!-- optional, replace with real image -->
+![Preview Screenshot](https://shihabcloud.netlify.app/preview.png) <!-- optional, replace with real image -->
 
 ---
 
