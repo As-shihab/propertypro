@@ -180,14 +180,22 @@ class UserController {
   // create profile =========================
 
   async createProfile(req, res) {
-console.log(req.headers.auth)
+    //     return res.json({token: req.headers});
+    // console.log(req.headers)
+    const token = req.headers.authorization?.split(" ")[1];
+    if (!token) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
     await axios
-      .get(`${process.env.APTIGEN_SERVER_URL}/user`, {
-        headers: { Authorization: `Bearer ${req.headers.authorization}` },
+      .get(process.env.APTIGEN_SERVER_URL, {
+        headers: {
+          Authorization: token,
+        },
       })
       .then((res) => {
-        console.log(res.data)
-        res.status(200).json({ message: "Profile created successfully" });
+        res
+          .status(200)
+          .json({ message: "Profile created successfully", data: res.data });
       })
       .catch((error) => {
         console.error("Error creating profile:", error);

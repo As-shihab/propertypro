@@ -11,7 +11,6 @@ export const useFetchUser = () => {
       setLoading(true);
       console.log("Fetching user data from server...");
       const response = await http.get(http.authUrl + "/api/user");
-      console.log("User data fetched successfully:", response.data);
       return response.data;
     } catch (error) {
       console.error("Error fetching user data:", error);

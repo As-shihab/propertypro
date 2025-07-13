@@ -29,10 +29,11 @@ const OtpVerification: React.FC<{ email?: string }> = ({ email }) => {
 
 const createProfile = async () => {
 
-  http.post(http.authUrl + "/api/auth/create-profile", {
-    email: user?.data?.email,
-    name: user?.data?.name,
+  http.post(http.authUrl + "/api/auth/create-profile", {})
+  .then((res) => {
+    console.log(res.data, "create profile response");
   })
+
 
 }
 
