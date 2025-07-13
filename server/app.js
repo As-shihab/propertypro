@@ -16,6 +16,7 @@ app.use(bodyParser.json());
 // Routers
 app.use("/api", paramsquery, verifyToken, require("./src/routers/api.route"));
 app.use("/auth", paramsquery, require("./src/routers/auth.route"));
+
 const runServer = async () => {
   try {
     await propetypro.$connect();
