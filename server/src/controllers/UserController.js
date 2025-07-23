@@ -180,27 +180,32 @@ class UserController {
   // create profile =========================
 
   async createProfile(req, res) {
-    //     return res.json({token: req.headers});
-    // console.log(req.headers)
-    const token = req.headers.authorization?.split(" ")[1];
+    const token = req.headers.authorization;
+
     if (!token) {
       return res.status(401).json({ error: "Unauthorized" });
     }
-    await axios
-      .get(process.env.APTIGEN_SERVER_URL, {
-        headers: {
-          Authorization: token,
-        },
-      })
-      .then((res) => {
-        res
-          .status(200)
-          .json({ message: "Profile created successfully", data: res.data });
-      })
-      .catch((error) => {
-        console.error("Error creating profile:", error);
-        res.status(500).json({ error: "Internal server error" });
+
+    try {
+      const response = await axios.get(
+        `${process.env.APTIGEN_SERVER_URL}/user`,
+        {
+          headers: {
+            Authorization: token, 
+          },
+        }
+      );
+
+      return res.status(200).json({
+        message: "Profile created successfully",
+        data: response.data,
       });
+    } catch (error) {
+      return res.status(500).json({
+        error: "Internal server error",
+        details: error.message,
+      });
+    }
   }
 }
 

@@ -11,6 +11,7 @@ import ProfilePage from "./Auth/profile/profile";
 import { httpClient } from "./services/http";
 import { useFetchUser } from "./config/GetUserFromServer";
 import Propertys from "./pages/propertys/Propertys";
+import ProductOverview from "./components/CardView/cardView";
 function App() {
   const [user, setUser] = useState();
   const [loading, setLoading] = useState(false);
@@ -18,8 +19,6 @@ function App() {
   const http = new httpClient();
 
   const fetchUser = useFetchUser();
-
-  // inside App component:
   const hasFetchedRef = useRef(false);
 
   useEffect(() => {
@@ -44,8 +43,12 @@ function App() {
         <Routes>
           {/* Public routes */}
           <Route path="/" element={<PropertyPro />} />
-
-          <Route path="/propetys" element={<Propertys />}></Route>
+          <Route path="/product-overview" element={<ProductOverview />} />
+          
+          {/* Protected routes */}
+          <Route path="/propetys" element={<Propertys />}>
+       
+          </Route>
 
           <Route path="/login" element={<Login switchToSignup={() => {}} />} />
 
