@@ -7,10 +7,12 @@ import Slider from "react-slick";
 import Img from '../../assets/images/loign.jpg';
 import { IoIosArrowDropright, IoIosArrowDropleft } from "react-icons/io";
 import ProfilePic from '../../assets/images/loign.jpg'; // Replace with actual image
+import { useContext } from "react";
+import { GlobalContext } from "../../guard/GlobalContext";
 
 export default function Card() {
   const images = Array.from({ length: 4 }, () => Img);
-
+ const {loading} = useContext(GlobalContext);
   const NextArrow = (props: any) => {
     const { onClick } = props;
     return (
@@ -56,15 +58,15 @@ export default function Card() {
                 <LazyLoadImage
                   src={src}
                   effect="blur"
-                  className="w-full h-[250px] object-cover transition-transform duration-500 group-hover:scale-105"
+                  className="w-full h-[250px] animate-pulse object-cover transition-transform duration-500 group-hover:scale-105"
                 />
               </div>
             ))}
           </Slider>
 
           {/* Hover Book Tag */}
-          <div className="absolute bottom-3 left-3 bg-white px-4 py-2 rounded-full text-sm font-medium shadow-md opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-            Book Now
+          <div className="">
+           <button onClick={()=>{alert()}} className="absolute bottom-3 left-3 bg-white px-4 py-2 rounded-full text-sm font-medium shadow-md opacity-0 group-hover:opacity-100 transition-opacity duration-300"> Book Now</button>
           </div>
 
           {/* User profile pic with hover effect */}
@@ -94,9 +96,11 @@ export default function Card() {
             <span className="text-lg font-semibold text-indigo-800">
               $343 <span className="text-sm text-gray-600">/ night</span>
             </span>
-            <button className="text-sm bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition">
+           
+           <Link to="/product-overview">
+            <button className="text-sm bg-indigo-600 text-white cursor-pointer px-4 py-2 rounded-lg hover:bg-indigo-700 transition">
               Book Now
-            </button>
+            </button></Link>
           </div>
         </div>
       </div>

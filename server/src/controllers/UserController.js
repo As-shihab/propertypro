@@ -3,6 +3,7 @@ const upload = require("../../config/file_upload.config");
 const { prisma } = require("../../config/prisma.config");
 const { createToken, verifyToken } = require("../helpers/jsonwebtoken");
 const { makeHash, compareHash } = require("../helpers/hash");
+const { default: axios } = require("axios");
 
 class UserController {
   constructor() {
@@ -175,7 +176,37 @@ class UserController {
       res.status(500).json({ error: "Internal server error" });
     }
   }
+
+  // create profile =========================
+
+  async createProfile(req, res) {
+    const token = req.headers.authorization;
+
+    if (!token) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+
+    try {
+      const response = await axios.get(
+        `${process.env.APTIGEN_SERVER_URL}/user`,
+        {
+          headers: {
+            Authorization: token, 
+          },
+        }
+      );
+
+      return res.status(200).json({
+        message: "Profile created successfully",
+        data: response.data,
+      });
+    } catch (error) {
+      return res.status(500).json({
+        error: "Internal server error",
+        details: error.message,
+      });
+    }
+  }
 }
 
-// ✅ Export the class itself
 module.exports = UserController;

@@ -28,7 +28,7 @@ export default function PropertyPro() {
 
       {/* card view */}
 
-      <div className="w-[98%] grid grid-cols-5 gap-4 m-auto mt-10">
+      <div className="w-[98%] grid xl:grid-cols-3 2xl:grid-cols-5 gap-2 m-auto mt-10">
         {arr.map(() => {
           return <Card />;
         })}
