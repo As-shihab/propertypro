@@ -7,12 +7,12 @@ import Slider from "react-slick";
 import Img from '../../assets/images/loign.jpg';
 import { IoIosArrowDropright, IoIosArrowDropleft } from "react-icons/io";
 import ProfilePic from '../../assets/images/loign.jpg'; // Replace with actual image
-import { useContext } from "react";
-import { GlobalContext } from "../../guard/GlobalContext";
+// import { useContext } from "react";
+// import { GlobalContext } from "../../guard/GlobalContext";
 
 export default function Card() {
   const images = Array.from({ length: 4 }, () => Img);
- const {loading} = useContext(GlobalContext);
+//  const {loading} = useContext(GlobalContext);
   const NextArrow = (props: any) => {
     const { onClick } = props;
     return (
