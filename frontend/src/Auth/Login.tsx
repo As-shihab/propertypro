@@ -89,6 +89,13 @@ const Login: React.FC<LoginProps> = ({ switchToSignup }) => {
       });
   };
 
+
+const LoginGoogle = () => {
+  window.open(http.authUrl + "/api/auth/google", "_self");
+}
+
+
+
   return (
     <motion.form
       key="login"
@@ -185,7 +192,8 @@ const Login: React.FC<LoginProps> = ({ switchToSignup }) => {
       {/* Google Login */}
       <button
         type="button"
-        className="w-full flex items-center justify-center gap-2 border border-gray-300 rounded-md py-2 hover:bg-gray-100 transition"
+        onClick={() =>LoginGoogle()}
+        className="w-full flex items-center justify-center cursor-pointer gap-2 border border-gray-300 rounded-md py-2 hover:bg-gray-100 transition"
       >
         <img
           src="https://www.svgrepo.com/show/475656/google-color.svg"
