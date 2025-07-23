@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
+import ImageGalleryDialog from "./ImageGallery";
 
 export default function ProductOverview() {
   const [date, setDate] = useState(new Date());
-
+  const [showGallery, setShowGallery] = useState(false);
   return (
     <div className="p-6 max-w-7xl mx-auto">
       {/* Title */}
@@ -34,10 +35,7 @@ export default function ProductOverview() {
         {/* Button */}
         <button
           className="absolute bottom-4 right-4 cursor-pointer bg-white/80 text-gray-800 hover:bg-white px-4 py-2 text-sm font-semibold rounded-lg shadow-md transition-all duration-300"
-          onClick={() => {
-            // Open modal or redirect to gallery
-            console.log("View all photos clicked");
-          }}
+          onClick={() => {setShowGallery(true)}}
         >
           View All Photos
         </button>
@@ -129,6 +127,10 @@ export default function ProductOverview() {
           <span>Value: 4.9</span>
         </div>
       </motion.div>
+
+
+
+      <ImageGalleryDialog open={showGallery} handleClose={()=>{setShowGallery(false)}}/>
     </div>
   );
 }
