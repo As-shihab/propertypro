@@ -12,6 +12,7 @@ type LoginProps = {
 const Login: React.FC<LoginProps> = ({ switchToSignup }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [googleLoad, setGoogleLoad] = useState(false);
   const [errors, setErrors] = useState<{ email?: string; password?: string ,unauthorized?:string}>({});
 
   let http = new httpClient();
@@ -90,10 +91,22 @@ const Login: React.FC<LoginProps> = ({ switchToSignup }) => {
   };
 
 
-const LoginGoogle = () => {
-  window.open(http.authUrl + "/api/auth/google", "_self");
+const LoginGoogle =async () => {
+setGoogleLoad(true);
+  await http.get("auth/google-client-id")
+  .then((res: any)=>{
+console.log("Google Client ID:", res.data.googleClientId);
+
+  })
+
+
+
 }
 
+
+const handleGoogleLogin = () => {
+  setGoogleLoad(true);
+  }
 
 
   return (
@@ -200,7 +213,7 @@ const LoginGoogle = () => {
           alt="Google"
           className="w-5 h-5"
         />
-        <span className="text-sm text-gray-700">Continue with Google</span>
+        <span className="text-sm cursor-pointer text-gray-700">Continue with Google</span>
       </button>
 
       {/* Switch to Sign Up */}
