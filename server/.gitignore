@@ -6,3 +6,5 @@ node_modules
 public/storage/images
 public/storage/videos
 
+
+/src/generated/prisma

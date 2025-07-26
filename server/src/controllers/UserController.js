@@ -4,6 +4,8 @@ const { prisma } = require("../../config/prisma.config");
 const { createToken, verifyToken } = require("../helpers/jsonwebtoken");
 const { makeHash, compareHash } = require("../helpers/hash");
 const { default: axios } = require("axios");
+const { OAuth2Client } = require("google-auth-library");
+const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
 class UserController {
   constructor() {
@@ -207,6 +209,40 @@ class UserController {
       });
     }
   }
+
+
+//  login with google ===========
+
+async googleLogin(req, res) {
+    const { token } = req.body;
+
+    if (!token) {
+      return res.status(400).json({ message: "Token is required" });
+    }
+
+    try {
+      const ticket = await client.verifyIdToken({
+        idToken: token,
+        audience: process.env.GOOGLE_CLIENT_ID,
+      });
+
+      const payload = ticket.getPayload();
+      const { email, name, picture } = payload;
+
+      return res.status(200).json({
+        status: true,
+        user: { email, name, picture },
+      });
+    } catch (err) {
+      return res.status(401).json({
+        status: false,
+        message: "Invalid or expired token",
+        error: err.message,
+      });
+    }
+  }
+
+
 }
 
 module.exports = UserController;
