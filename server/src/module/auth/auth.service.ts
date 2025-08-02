@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 
 @Injectable()
-export class ProductService {
+export class AuthService {
   // Service methods here
 }

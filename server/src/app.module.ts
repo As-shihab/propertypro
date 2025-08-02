@@ -1,3 +1,4 @@
+import { AuthModule } from '@module/auth/auth.module';
 
 import { Module } from '@nestjs/common';
 import { RouterModule } from '@nestjs/core';
@@ -6,6 +7,7 @@ import { apiRoutes } from '../src/routers/api.router';
 
 @Module({
   imports: [
+    AuthModule,
     RouterModule.register([
       {
         path: 'api',

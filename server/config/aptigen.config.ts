@@ -24,7 +24,6 @@ if (args.length === 3 && args[0] === 'new' && args[1] === 'module') {
   const basePath = path.join(__dirname, '..', 'src', 'module', moduleDir);
   fs.mkdirSync(basePath, { recursive: true });
   fs.mkdirSync(path.join(basePath, 'database'), { recursive: true });
-  fs.mkdirSync(path.join(basePath, 'models'), { recursive: true });
   fs.writeFileSync(
     path.join(basePath, 'database', `${moduleDir}.prisma`),
     `// ${moduleName} Database initialization code here\n`,

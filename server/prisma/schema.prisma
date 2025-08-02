@@ -7,80 +7,109 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// Todoapp Database schema
 
-// Product Database initialization code here
+// Auth Database initialization code here
 
-// Todoapp Database initialization code here
-// Todoapp Database initialization code here
-
-// 🌍 Module: todoapp
-// Todoapp Database initialization code here
-
-model todo {
-  id          Int      @id @default(autoincrement())
-  title       String
-  description String?
-  started     Boolean  @default(false)
-  completed   Boolean  @default(false)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  @@map("todos")
-}
-
-// Myapp Database initialization code here
-
-// 🌍 Module: myapp
-// Myapp Database initialization code here
-
-model Myapp {
-  id          Int      @id @default(autoincrement())
-  name        String
-  myapp       String?
-  gggg        String?
-  description String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  @@map("myapps")
-}
-
-model MyappDetail {
+model User {
   id        Int      @id @default(autoincrement())
-  myappId   Int
-  detail    String
+  email     String   @unique
+  password  String
+  name      String?
+  verified  Boolean  @default(false)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@map("myapp_details")
+  profile  Profile?
+  sessions Session[]
+  tokens   Token[]
+  roles    UserRole[]
+
+  @@map("users")
 }
 
-// Product Database initialization code here
-// Product Database initialization code here
-// Product Database initialization code here
+model Profile {
+  id        Int       @id @default(autoincrement())
+  userId    Int       @unique
+  user      User      @relation(fields: [userId], references: [id])
+  bio       String?
+  avatarUrl String?
+  phone     String?
+  address   String?
+  dob       DateTime?
+  gender    String?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
 
-// 🌍 Module: product
-// Product Database initialization code here
-
-model Product {
-  id          Int      @id @default(autoincrement())
-  name        String
-  price       Float
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  description String?
-  category    String?
-
-  @@map("products")
+  @@map("profiles")
 }
 
-model Order {
+model Session {
   id        Int      @id @default(autoincrement())
-  productId Int
-  quantity  Int
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
+  device    String?
+  ipAddress String?
+  userAgent String?
+  active    Boolean  @default(true)
+  lastUsed  DateTime @default(now())
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  expiresAt DateTime
 
-  @@map("orders")
+  @@map("sessions")
+}
+
+model Token {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
+  token     String   @unique
+  type      String
+  createdAt DateTime @default(now())
+  expiresAt DateTime
+  used      Boolean  @default(false)
+
+  @@map("tokens")
+}
+
+model Role {
+  id          Int          @id @default(autoincrement())
+  name        String       @unique
+  description String?
+  permissions Permission[]
+  users       UserRole[]
+
+  RolePermission RolePermission[]
+
+  @@map("roles")
+}
+
+model Permission {
+  id          Int              @id @default(autoincrement())
+  name        String           @unique
+  description String?
+  roles       RolePermission[]
+
+  Role Role[]
+
+  @@map("permissions")
+}
+
+model UserRole {
+  id     Int  @id @default(autoincrement())
+  userId Int
+  roleId Int
+  user   User @relation(fields: [userId], references: [id])
+  role   Role @relation(fields: [roleId], references: [id])
+
+  @@map("user_roles")
+}
+
+model RolePermission {
+  id           Int        @id @default(autoincrement())
+  roleId       Int
+  permissionId Int
+  role         Role       @relation(fields: [roleId], references: [id])
+  permission   Permission @relation(fields: [permissionId], references: [id])
+
+  @@map("role_permissions")
 }

@@ -1,9 +1,9 @@
 import { Controller, Get } from '@nestjs/common';
 
 @Controller()
-export class ProductController {
+export class AuthController {
   @Get()
   getHello() {
-    return { message: 'Product works' };
+    return { message: 'Auth works' };
   }
 }
