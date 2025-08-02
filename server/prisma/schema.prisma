@@ -7,10 +7,109 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model profile {
+
+// Auth Database initialization code here
+
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  password  String
+  name      String?
+  verified  Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  profile  Profile?
+  sessions Session[]
+  tokens   Token[]
+  roles    UserRole[]
+
+  @@map("users")
+}
+
+model Profile {
+  id        Int       @id @default(autoincrement())
+  userId    Int       @unique
+  user      User      @relation(fields: [userId], references: [id])
+  bio       String?
+  avatarUrl String?
+  phone     String?
+  address   String?
+  dob       DateTime?
+  gender    String?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  @@map("profiles")
+}
+
+model Session {
   id        Int      @id @default(autoincrement())
   userId    Int
-  bio       String?
-  location  String?
+  user      User     @relation(fields: [userId], references: [id])
+  device    String?
+  ipAddress String?
+  userAgent String?
+  active    Boolean  @default(true)
+  lastUsed  DateTime @default(now())
   createdAt DateTime @default(now())
+  expiresAt DateTime
+
+  @@map("sessions")
+}
+
+model Token {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
+  token     String   @unique
+  type      String
+  createdAt DateTime @default(now())
+  expiresAt DateTime
+  used      Boolean  @default(false)
+
+  @@map("tokens")
+}
+
+model Role {
+  id          Int          @id @default(autoincrement())
+  name        String       @unique
+  description String?
+  permissions Permission[]
+  users       UserRole[]
+
+  RolePermission RolePermission[]
+
+  @@map("roles")
+}
+
+model Permission {
+  id          Int              @id @default(autoincrement())
+  name        String           @unique
+  description String?
+  roles       RolePermission[]
+
+  Role Role[]
+
+  @@map("permissions")
+}
+
+model UserRole {
+  id     Int  @id @default(autoincrement())
+  userId Int
+  roleId Int
+  user   User @relation(fields: [userId], references: [id])
+  role   Role @relation(fields: [roleId], references: [id])
+
+  @@map("user_roles")
+}
+
+model RolePermission {
+  id           Int        @id @default(autoincrement())
+  roleId       Int
+  permissionId Int
+  role         Role       @relation(fields: [roleId], references: [id])
+  permission   Permission @relation(fields: [permissionId], references: [id])
+
+  @@map("role_permissions")
 }

@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import ImageGalleryDialog from "./ImageGallery";
 
 export default function ProductOverview() {
-  const [date, setDate] = useState(new Date());
+//   const [date, setDate] = useState(new Date());
   const [showGallery, setShowGallery] = useState(false);
   return (
     <div className="p-6 max-w-7xl mx-auto">

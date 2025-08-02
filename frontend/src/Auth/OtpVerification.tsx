@@ -46,7 +46,8 @@ const createProfile = async () => {
     setMessage("");
     await http
       .post(http.authUrl + "/api/user/verify-otp", { otp: otpString })
-      .then((res) => {
+      .then((res: any) => {
+        console.log(res )
   createProfile();
       })
       .catch((err) => {

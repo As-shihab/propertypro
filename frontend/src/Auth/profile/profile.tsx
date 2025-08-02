@@ -1,4 +1,4 @@
-import React from "react";
+
 import { FaMapMarkerAlt, FaStar, FaCheckCircle, FaPhoneAlt, FaEnvelope, FaHeart, FaShareAlt } from "react-icons/fa";
 
 // Dummy review data
