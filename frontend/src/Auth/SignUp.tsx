@@ -28,7 +28,7 @@ const Signup: React.FC<SignupProps> = ({
     name: "",
     email: "",
     password: "",
-    platform:"PROPERTYPRO",
+    platform: "PROPERTYPRO",
   });
 
   const http = new httpClient();
@@ -75,10 +75,20 @@ const Signup: React.FC<SignupProps> = ({
     setLoading(true);
 
     await http
-      .post(http.authUrl + "/api/signup", user)
-      .then((res: any) => {
-        http.saveToken("token", res.data.token);
-        location.reload();
+      .post(http.authUrl + "/api/auth/signup", user)
+      .then(async (res: any) => {
+
+        await http.post(http.authUrl + "/api/auth/login", {
+          email: user.email,
+          password: user.password,
+        })
+          .then((res: any) => {
+
+
+            http.saveToken("token", res.data.access_token);
+            location.reload();
+          });
+
       })
       .catch((err) => {
         console.error("Signup failed:", err);
@@ -117,9 +127,8 @@ const Signup: React.FC<SignupProps> = ({
         <input
           placeholder="Enter your name"
           type="text"
-          className={`w-full px-4 py-2 border ${
-            errors.name ? "border-red-500" : "border-gray-300"
-          } rounded-md`}
+          className={`w-full px-4 py-2 border ${errors.name ? "border-red-500" : "border-gray-300"
+            } rounded-md`}
           value={user.name}
           onChange={(e) => handleChange("name", e.target.value)}
         />
@@ -136,9 +145,8 @@ const Signup: React.FC<SignupProps> = ({
         <input
           placeholder="type to email"
           type="email"
-          className={`w-full px-4 py-2 border ${
-            errors.email ? "border-red-500" : "border-gray-300"
-          } rounded-md`}
+          className={`w-full px-4 py-2 border ${errors.email ? "border-red-500" : "border-gray-300"
+            } rounded-md`}
           value={user.email}
           onChange={(e) => handleChange("email", e.target.value)}
         />
@@ -156,9 +164,8 @@ const Signup: React.FC<SignupProps> = ({
           <input
             placeholder="Enter your password"
             type={showPassword ? "text" : "password"}
-            className={`w-full px-4 py-2 border ${
-              errors.password ? "border-red-500" : "border-gray-300"
-            } rounded-md pr-10`}
+            className={`w-full px-4 py-2 border ${errors.password ? "border-red-500" : "border-gray-300"
+              } rounded-md pr-10`}
             value={user.password}
             onChange={(e) => handleChange("password", e.target.value)}
           />

@@ -62,28 +62,14 @@ const Login: React.FC<LoginProps> = ({ switchToSignup }) => {
     setLoading(true);
 
     http
-      .post(http.authUrl +"/api/login", user)
+      .post("/api/auth/login", user)
       .then((res :any) => {
-        console.log( res.data);
-         http.saveToken("token", res.data.token);
+         http.saveToken("token", res.data.access_token);
          location.reload();
       })
       .catch((err) => {
-        console.error("Login failed:", err);
-       if(err.response?.data.message){
-        setErrors((prev) => ({ ...prev, unauthorized: err.response?.data.message }));
-       }
-        if (err.response?.data?.error === "Email is required") {
-          setErrors((prev) => ({ ...prev, email: "Email is required" }));
-        } else if (err.response?.data?.error === "Password is required") {
-          setErrors((prev) => ({ ...prev, password: "Password is required" }));
-        }
-        else if (err.response?.data?.error === "User not found") {
-          setErrors((prev) => ({ ...prev, unauthorized: "User not found" }));
-        }
-        else if (err.response?.data?.error === "Invalid password") {
-          setErrors((prev) => ({ ...prev, unauthorized: "Invalid password" }));
-        }
+        setErrors((prev) => ({ ...prev, unauthorized: err?.response?.data?.message}));
+        console.log(err, "error message");
       })
       .finally(() => {
         setLoading(false);

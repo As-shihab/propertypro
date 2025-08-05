@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, lazy } from "react";
 import "./App.css";
 import Header from "./components/header";
 import { GlobalContext } from "./guard/GlobalContext";
@@ -12,6 +12,7 @@ import { httpClient } from "./services/http";
 import { useFetchUser } from "./config/GetUserFromServer";
 import Propertys from "./pages/propertys/Propertys";
 import ProductOverview from "./components/CardView/cardView";
+const AdminLayout = lazy(() => import("./Auth/admin/AdminLayout"));
 function App() {
   const [user, setUser] = useState();
   const [loading, setLoading] = useState(false);
@@ -44,16 +45,24 @@ function App() {
           {/* Public routes */}
           <Route path="/" element={<PropertyPro />} />
           <Route path="/product-overview" element={<ProductOverview />} />
-          
+
           {/* Protected routes */}
           <Route path="/propetys" element={<Propertys />}>
-       
+
           </Route>
 
-          <Route path="/login" element={<Login switchToSignup={() => {}} />} />
+          <Route path="/login" element={<Login switchToSignup={() => { }} />} />
 
           <Route path="/profile" element={<ProfilePage />} />
           <Route path="*" element={<NotFound404 />} />
+
+          <Route
+            path="/admin/*"
+            element={
+              <AdminLayout />
+            }
+          />
+          
         </Routes>
         <Footer />
       </Router>

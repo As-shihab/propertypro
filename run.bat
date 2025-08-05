@@ -1,4 +1,8 @@
-@echo off
-E:
-cd admin
-php -S localhost:2000
+
+cd frontend
+npm run dev
+cd ..
+cd backend
+npm run dev
+cd ..
+pause
