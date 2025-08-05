@@ -79,13 +79,9 @@ export class AuthController {
   }
 
   @Get('user')
-  async getUser(@Headers('authorization') authHeader: string) {
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      throw new UnauthorizedException('Authorization header missing or invalid');
-    }
-
-    const token = authHeader.split(' ')[1];
-    const payload = this.Token.verifyToken(token); // should return { id: number }
+  async getUser(@Headers("authorization") headers: string) {
+    const token = headers
+    const payload = await this.Token.verifyToken(token);
 
     if (!payload || typeof payload.id !== 'number') {
       throw new UnauthorizedException('Invalid token');
@@ -97,6 +93,7 @@ export class AuthController {
         id: true,
         name: true,
         email: true,
+        verified:true
       },
     });
 
@@ -106,6 +103,11 @@ export class AuthController {
 
     return user;
   }
+
+
+
+
+
 
 
 }
