@@ -4,15 +4,14 @@ axios.defaults.baseURL = "http://localhost:3000";
 const axiosInstance = axios.create({
   headers: {
     "Content-Type": "application/json",
-    Authorization: localStorage.getItem("token")
-      ? `Bearer ` + localStorage.getItem("token")
+    Authorization: localStorage.getItem("token") ? localStorage.getItem("token")
       : "",
     "Access-Control-Allow-Origin": "*",
   },
 });
 
 export class httpClient {
-  constructor() {}
+  constructor() { }
   authUrl = "http://127.0.0.1:8000";
   async post(endpoint: string, data: object | any) {
     return axiosInstance.post(endpoint, data);

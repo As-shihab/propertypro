@@ -3,20 +3,16 @@ import {
   Post,
   Get,
   Body,
-  Param,
   UnauthorizedException,
+  Headers,
 } from '@nestjs/common';
 import { PrismaService } from '@prisma/prisma.service';
 import * as bcrypt from 'bcrypt';
-import { JwtService } from '@nestjs/jwt';
+import { JwtToken } from 'shared/lib/Token/Jwt.token';
 
 @Controller()
 export class AuthController {
-  private readonly jwtService = new JwtService({
-    secret: process.env.JWT_SECRET,
-    signOptions: { expiresIn: '1d' },
-  });
-
+  public Token = new JwtToken();
   private readonly db = new PrismaService();
 
   @Post('signup')
@@ -53,7 +49,7 @@ export class AuthController {
         email: true,
       },
     });
-    
+
     return {
       message: 'User created successfully',
       user,
@@ -73,25 +69,43 @@ export class AuthController {
       throw new UnauthorizedException('Invalid password');
     }
 
-    const token = this.jwtService.sign({
-      sub: user.id,
-      email: user.email,
-    });
+    const token = this.Token.generateToken
+      ({
+        id: user.id,
+        email: user.email,
+      });
 
     return { access_token: token };
   }
 
-  @Get('user/:id')
-  async getUser(@Param('id') id: string) {
+  @Get('user')
+  async getUser(@Headers('authorization') authHeader: string) {
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      throw new UnauthorizedException('Authorization header missing or invalid');
+    }
+
+    const token = authHeader.split(' ')[1];
+    const payload = this.Token.verifyToken(token); // should return { id: number }
+
+    if (!payload || typeof payload.id !== 'number') {
+      throw new UnauthorizedException('Invalid token');
+    }
+
     const user = await this.db.user.findUnique({
-      where: { id: Number(id) },
-      select: { id: true, email: true },
+      where: { id: payload.id },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+      },
     });
 
     if (!user) {
-      return { message: 'User not found' };
+      throw new UnauthorizedException('User not found');
     }
 
     return user;
   }
+
+
 }

@@ -75,20 +75,9 @@ const Signup: React.FC<SignupProps> = ({
     setLoading(true);
 
     await http
-      .post(http.authUrl + "/api/auth/signup", user)
+      .post("/api/auth/signup", user)
       .then(async (res: any) => {
-
-        await http.post(http.authUrl + "/api/auth/login", {
-          email: user.email,
-          password: user.password,
-        })
-          .then((res: any) => {
-
-
-            http.saveToken("token", res.data.access_token);
-            location.reload();
-          });
-
+        await HandleLogin(res.data.user.email, user.password);
       })
       .catch((err) => {
         console.error("Signup failed:", err);
@@ -101,7 +90,8 @@ const Signup: React.FC<SignupProps> = ({
           });
         } else {
           setErrors({
-            email: "Signup failed",
+            email: err.response?.data?.message || "An error occurred",
+            password: errors.password,
           });
         }
       })
@@ -109,6 +99,22 @@ const Signup: React.FC<SignupProps> = ({
         setLoading(false);
       });
   };
+
+  const HandleLogin = async (email: string, password: string) => {
+    await http
+      .post("/api/auth/login", { email, password })
+      .then((res: any) => {
+        http.saveToken("token", res.data.access_token);
+        location.reload();
+      })
+      .catch(() => {
+
+        switchToLogin();
+      })
+      .finally(() => {
+        setLoading(false);
+      })
+  }
 
   return (
     <motion.form

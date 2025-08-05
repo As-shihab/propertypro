@@ -10,7 +10,7 @@ export const useFetchUser = () => {
     try {
       setLoading(true);
       console.log("Fetching user data from server...");
-      const response = await http.get(http.authUrl + "/api/user");
+      const response = await http.get("/api/auth/user");
       return response.data;
     } catch (error) {
       console.error("Error fetching user data:", error);
