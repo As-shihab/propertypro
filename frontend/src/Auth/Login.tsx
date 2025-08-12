@@ -12,6 +12,7 @@ type LoginProps = {
 const Login: React.FC<LoginProps> = ({ switchToSignup }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [googleLoad, setGoogleLoad] = useState(false);
   const [errors, setErrors] = useState<{ email?: string; password?: string ,unauthorized?:string}>({});
 
   let http = new httpClient();
@@ -61,33 +62,38 @@ const Login: React.FC<LoginProps> = ({ switchToSignup }) => {
     setLoading(true);
 
     http
-      .post(http.authUrl +"/api/login", user)
+      .post("/api/auth/login", user)
       .then((res :any) => {
-        console.log( res.data);
-         http.saveToken("token", res.data.token);
+         http.saveToken("token", res.data.access_token);
          location.reload();
       })
       .catch((err) => {
-        console.error("Login failed:", err);
-       if(err.response?.data.message){
-        setErrors((prev) => ({ ...prev, unauthorized: err.response?.data.message }));
-       }
-        if (err.response?.data?.error === "Email is required") {
-          setErrors((prev) => ({ ...prev, email: "Email is required" }));
-        } else if (err.response?.data?.error === "Password is required") {
-          setErrors((prev) => ({ ...prev, password: "Password is required" }));
-        }
-        else if (err.response?.data?.error === "User not found") {
-          setErrors((prev) => ({ ...prev, unauthorized: "User not found" }));
-        }
-        else if (err.response?.data?.error === "Invalid password") {
-          setErrors((prev) => ({ ...prev, unauthorized: "Invalid password" }));
-        }
+        setErrors((prev) => ({ ...prev, unauthorized: err?.response?.data?.message}));
+        console.log(err, "error message");
       })
       .finally(() => {
         setLoading(false);
       });
   };
+
+
+const LoginGoogle =async () => {
+setGoogleLoad(true);
+  await http.get("auth/google-client-id")
+  .then((res: any)=>{
+console.log("Google Client ID:", res.data.googleClientId);
+
+  })
+
+
+
+}
+
+
+const handleGoogleLogin = () => {
+  setGoogleLoad(true);
+  }
+
 
   return (
     <motion.form
@@ -185,14 +191,15 @@ const Login: React.FC<LoginProps> = ({ switchToSignup }) => {
       {/* Google Login */}
       <button
         type="button"
-        className="w-full flex items-center justify-center gap-2 border border-gray-300 rounded-md py-2 hover:bg-gray-100 transition"
+        onClick={() =>LoginGoogle()}
+        className="w-full flex items-center justify-center cursor-pointer gap-2 border border-gray-300 rounded-md py-2 hover:bg-gray-100 transition"
       >
         <img
           src="https://www.svgrepo.com/show/475656/google-color.svg"
           alt="Google"
           className="w-5 h-5"
         />
-        <span className="text-sm text-gray-700">Continue with Google</span>
+        <span className="text-sm cursor-pointer text-gray-700">Continue with Google</span>
       </button>
 
       {/* Switch to Sign Up */}

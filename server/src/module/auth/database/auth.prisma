@@ -1,5 +1,3 @@
-// Auth Database initialization code here
-// Auth Database initialization code here
 
 model User {
     id        Int      @id @default(autoincrement())
