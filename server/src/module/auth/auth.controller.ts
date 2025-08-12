@@ -105,6 +105,24 @@ export class AuthController {
   }
 
 
+  // otp verification
+
+
+  @Post('verify-otp')
+  async verifyOtp(@Body() body: { otp: string }) {
+    const { otp } = body;
+
+    // Validate OTP
+    if (!otp || otp.length !== 6) {
+      throw new UnauthorizedException('Invalid OTP');
+    }
+
+    // Here you would typically verify the OTP against your database or service
+    // For demonstration, we assume OTP is valid
+
+    return { message: 'OTP verified successfully' };
+  }
+
 
 
 

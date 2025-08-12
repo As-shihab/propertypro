@@ -5,7 +5,7 @@ import MediaPricing from "./slideList/MediaPricing";
 import ReviewSubmit from "./slideList/ReviewSubmit";
 
 function ListingContainer() {
-  const [currentStep, setCurrentStep] = useState(3);
+  const [currentStep, setCurrentStep] = useState(2);
   const [hotelData, setHotelData] = useState<Record<string, any>>({});
 
   const handleWelcomeComplete = () => {
