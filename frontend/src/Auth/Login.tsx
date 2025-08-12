@@ -22,6 +22,8 @@ const Login: React.FC<LoginProps> = ({ switchToSignup }) => {
     password: "",
   });
 
+  googleLoad
+
   // Email validation
   const validateEmail = (email: string): string | undefined => {
     const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -93,8 +95,7 @@ console.log("Google Client ID:", res.data.googleClientId);
 const handleGoogleLogin = () => {
   setGoogleLoad(true);
   }
-
-
+handleGoogleLogin();
   return (
     <motion.form
       key="login"

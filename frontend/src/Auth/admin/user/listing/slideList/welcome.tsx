@@ -101,6 +101,7 @@ const Welcome = ({ onGetStarted }:any) => {
           {/* Feature Cards - Auto-rotating */}
           <div className="grid grid-cols-4 gap-4 mb-8">
             {[1, 2, 3, 4].map((item, index) => (
+            
               <motion.div
                 key={index}
                 className={`h-32 rounded-lg flex flex-col items-center justify-center p-4 ${currentFeature === index ? 'bg-blue-100 border-2 border-blue-500' : 'bg-gray-100'}`}
@@ -111,6 +112,7 @@ const Welcome = ({ onGetStarted }:any) => {
               >
                 <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white font-bold mb-2">
                   {index + 1}
+                  {item}
                 </div>
                 <p className="text-sm text-center font-medium">
                   {features[index]}
@@ -125,7 +127,7 @@ const Welcome = ({ onGetStarted }:any) => {
       <div className="w-full max-w-2xl">
         {/* Progress Indicators */}
         <div className="flex justify-center mb-6">
-          {[1, 2, 3, 4].map((step, index) => (
+          {[1, 2, 3, 4].map((_step, index) => (
             <motion.div
               key={index}
               className={`w-3 h-3 mx-1 rounded-full ${index === 0 ? 'bg-blue-600' : 'bg-gray-300'}`}
@@ -163,6 +165,7 @@ const Welcome = ({ onGetStarted }:any) => {
             />
           </svg>
         </motion.div>
+
       </div>
     </motion.div>
   );

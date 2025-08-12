@@ -3,7 +3,7 @@ import GlobalFilter from "../../components/GlobalFilter/GlobalFilter";
 import Card from "../../components/card/Card";
 // import { GlobalContext } from "../../guard/GlobalContext";
 // import { useScrollInfo } from "../../helpers/scrollWatcher";
-import { useGeoLocation } from "../../helpers/geoLocation";
+// import { useGeoLocation } from "../../helpers/geoLocation";
 // import { httpClient } from "../../services/http";
 export default function PropertyPro() {
   // const http = new httpClient();

@@ -1,6 +1,7 @@
-import React from 'react'
+
 
 export default function ReviewSubmit({data}: any) {
+  const { } = data;
   return (
     <div>
       review

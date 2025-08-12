@@ -1,6 +1,7 @@
-import React from 'react'
+
 
 export default function MediaPricing({MediaPricing }: any) {
+  const {  } = MediaPricing;
   return (
     <div>
       
