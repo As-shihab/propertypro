@@ -5,9 +5,14 @@ import {
   Body,
   UnauthorizedException,
   Headers,
+  HttpException,
+  HttpStatus,
+  Head,
 } from '@nestjs/common';
 import { PrismaService } from '@prisma/prisma.service';
 import * as bcrypt from 'bcrypt';
+import { Emailer } from 'shared/lib/Email/Emailer';
+import { OtpTemplate } from 'shared/lib/Email/OtpTemplete';
 import { JwtToken } from 'shared/lib/Token/Jwt.token';
 
 @Controller()
@@ -93,7 +98,7 @@ export class AuthController {
         id: true,
         name: true,
         email: true,
-        verified:true
+        verified: true
       },
     });
 
@@ -107,25 +112,109 @@ export class AuthController {
 
   // otp verification
 
-
-  @Post('verify-otp')
-  async verifyOtp(@Body() body: { otp: string }) {
-    const { otp } = body;
-
-    // Validate OTP
-    if (!otp || otp.length !== 6) {
-      throw new UnauthorizedException('Invalid OTP');
+  @Post('sent-otp')
+  async verifyOtp(@Headers() headers: { authorization: string }) {
+    const token = headers.authorization;
+    if (!token) {
+      throw new HttpException('Authorization token is required', HttpStatus.UNAUTHORIZED);
     }
 
-    // Here you would typically verify the OTP against your database or service
-    // For demonstration, we assume OTP is valid
+    const payload = await this.Token.verifyToken(token);
+    const userId = payload.id;
 
-    return { message: 'OTP verified successfully' };
+    try {
+
+      const user = await this.db.user.findUnique({
+        where: { id: userId },
+        select: { email: true, name: true },
+      });
+
+      if (!user) {
+        throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+      }
+
+
+      const otp = Math.floor(100000 + Math.random() * 900000).toString();
+
+      await Emailer(
+        user.email,
+        'Aptigen OTP Verification',
+        `Hi, ${user.name} Greetings from Aptigen!`,
+        OtpTemplate(otp, user.name)
+      ).then(async () => {
+
+        const verifyToken = this.Token.generateToken({
+          id: userId,
+          email: user.email,
+        });
+
+        await this.db.token.create({
+          data: {
+            userId: userId,
+            otp: otp,
+            token: verifyToken,
+            type: 'todo-verification',
+            expiresAt: new Date(Date.now() + 10 * 60 * 1000),
+          },
+        });
+
+      })
+      return { message: 'OTP sent successfully' };
+
+    } catch (error) {
+      console.error('❌ Error sending OTP:', error);
+      throw new HttpException('Failed to send OTP', HttpStatus.INTERNAL_SERVER_ERROR);
+    }
   }
 
 
 
+  @Post('verify-otp')
+  async verifyOtpCode(@Body() body: { otp: string }) {
+    const { otp } = body;
 
+    if (!otp) {
+      return new HttpException('OTP is required', HttpStatus.BAD_REQUEST);
+    }
 
+    const token = await this.db.token.findFirst({
+      where: {
+        otp: typeof otp === 'string' ? otp : String(otp),
+        expiresAt: {
+          gt: new Date(),
+        },
+        used: false,
+      },
+      include: {
+        user: true,
+      },
+    });
+
+    if (!token) {
+      throw new HttpException('Invalid or expired OTP', HttpStatus.UNAUTHORIZED);
+    }
+
+    // Mark the OTP as used
+    await this.db.token.update({
+      where: { id: token.id },
+      data: { used: true },
+    });
+
+    // Update user verification status
+    await this.db.user.update({
+      where: { id: token.userId },
+      data: { verified: true },
+    });
+
+    await this.db.profile.create({
+      data: {
+        userId: token.userId,
+
+      },
+    })
+
+    return { message: 'OTP verified successfully', code: HttpStatus.OK };
+  }
 
 }
+

@@ -1,15 +1,13 @@
-generator client {
-  provider = "prisma-client-js"
-}
-
 datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
 }
 
+generator client {
+  provider = "prisma-client-js"
+}
 
-// Auth Database initialization code here
-
+// 🌍 Module: auth
 model User {
   id        Int      @id @default(autoincrement())
   email     String   @unique
@@ -62,7 +60,8 @@ model Token {
   id        Int      @id @default(autoincrement())
   userId    Int
   user      User     @relation(fields: [userId], references: [id])
-  token     String   @unique
+  token     String
+  otp       String?
   type      String
   createdAt DateTime @default(now())
   expiresAt DateTime
