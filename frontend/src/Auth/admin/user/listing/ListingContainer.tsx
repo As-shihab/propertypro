@@ -5,11 +5,13 @@ import MediaPricing from "./slideList/MediaPricing";
 import ReviewSubmit from "./slideList/ReviewSubmit";
 
 function ListingContainer() {
-  const [currentStep, setCurrentStep] = useState(2);
+  const [currentStep, setCurrentStep] = useState(1);
   const [hotelData, setHotelData] = useState<Record<string, any>>({});
 
+  const totalSteps = 5; // Welcome + 4 steps
+
   const handleWelcomeComplete = () => {
-    setCurrentStep(2); // Proceed to basic info (Step 1 of form)
+    setCurrentStep(2);
   };
 
   const handleStep1Complete = (data: any) => {
@@ -29,7 +31,6 @@ function ListingContainer() {
 
   const handleSubmit = () => {
     console.log("Final submission:", hotelData);
-    // Here you would typically send data to your backend
     alert("Hotel submitted successfully!");
   };
 
@@ -38,44 +39,62 @@ function ListingContainer() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
-      {/* Welcome Screen */}
-      {currentStep === 1 && <Welcome onNext={handleWelcomeComplete} />}
+    <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-between p-4">
+      {/* Main Content */}
+      <div className="flex-1 flex items-center justify-center w-full">
+        hello
+        {/* {currentStep === 1 && <Welcome onNext={handleWelcomeComplete} />}
+        {currentStep === 2 && (
+          <Welcome onNext={handleStep1Complete} initialData={hotelData} />
+        )}
+        {currentStep === 3 && (
+          <LocationFeature
+            onNext={handleStep2Complete}
+            onBack={goBack}
+            initialData={hotelData}
+          />
+        )}
+        {currentStep === 4 && (
+          <MediaPricing
+            onNext={handleStep3Complete}
+            onBack={goBack}
+            initialData={hotelData}
+          />
+        )}
+        {currentStep === 5 && (
+          <ReviewSubmit
+            data={hotelData}
+            onSubmit={handleSubmit}
+            onBack={goBack}
+          />
+        )} */}
+      </div>
 
-      {/* Step 1: Basic Information */}
-      {currentStep === 2 && (
-        <Welcome
-          onNext={handleStep1Complete}
-          initialData={hotelData}
-        />
-      )}
-
-      {/* Step 2: Location & Features */}
-      {currentStep === 3 && (
-        <LocationFeature
-          onNext={handleStep2Complete}
-          onBack={goBack}
-          initialData={hotelData}
-        />
-      )}
-
-      {/* Step 3: Media & Pricing */}
-      {currentStep === 4 && (
-        <MediaPricing
-          onNext={handleStep3Complete}
-          onBack={goBack}
-          initialData={hotelData}
-        />
-      )}
-
-      {/* Step 4: Review & Submit */}
-      {currentStep === 5 && (
-        <ReviewSubmit
-          data={hotelData}
-          onSubmit={handleSubmit}
-          onBack={goBack}
-        />
-      )}
+      {/* Progress Bar */}
+      <div className="w-full max-w-2xl mt-6">
+        <div className="flex justify-between mb-2 text-sm text-gray-600">
+          {["Welcome", "Basic Info", "Location", "Media", "Review"].map(
+            (label, index) => (
+              <span
+                key={index}
+                className={`${
+                  currentStep >= index + 1 ? "text-blue-600 font-semibold" : ""
+                }`}
+              >
+                {label}
+              </span>
+            )
+          )}
+        </div>
+        <div className="w-full bg-gray-200 rounded-full h-2 overflow-hidden">
+          <div
+            className="bg-blue-600 h-2 transition-all duration-500"
+            style={{
+              width: `${((currentStep - 1) / (totalSteps - 1)) * 100}%`,
+            }}
+          ></div>
+        </div>
+      </div>
     </div>
   );
 }

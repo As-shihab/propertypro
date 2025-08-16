@@ -48,6 +48,8 @@ model Session {
   device    String?
   ipAddress String?
   userAgent String?
+  latitude  Float?
+  longitude Float?
   active    Boolean  @default(true)
   lastUsed  DateTime @default(now())
   createdAt DateTime @default(now())

@@ -14,11 +14,15 @@ import * as bcrypt from 'bcrypt';
 import { Emailer } from 'shared/lib/Email/Emailer';
 import { OtpTemplate } from 'shared/lib/Email/OtpTemplete';
 import { JwtToken } from 'shared/lib/Token/Jwt.token';
+import { AuthService } from './auth.service';
+import { response } from 'express';
 
 @Controller()
 export class AuthController {
   public Token = new JwtToken();
   private readonly db = new PrismaService();
+
+  constructor(private authService: AuthService) { }
 
   @Post('signup')
   async signup(@Body() body: { name: string; password: string; email: string }) {
@@ -194,13 +198,12 @@ export class AuthController {
       throw new HttpException('Invalid or expired OTP', HttpStatus.UNAUTHORIZED);
     }
 
-    // Mark the OTP as used
     await this.db.token.update({
       where: { id: token.id },
       data: { used: true },
     });
 
-    // Update user verification status
+
     await this.db.user.update({
       where: { id: token.userId },
       data: { verified: true },
@@ -214,6 +217,29 @@ export class AuthController {
     })
 
     return { message: 'OTP verified successfully', code: HttpStatus.OK };
+  }
+
+
+
+  @Get('geolocation')
+  async getGeoLocation(@Headers('latitude') latitude: string, @Headers('longitude') longitude: string) {
+    if (!latitude || !longitude) {
+      throw new HttpException('Latitude and longitude are required', HttpStatus.LENGTH_REQUIRED);
+    }
+
+    const lat = parseFloat(latitude);
+    const lon = parseFloat(longitude);
+
+    if (isNaN(lat) || isNaN(lon)) {
+      throw new HttpException('Invalid latitude or longitude', HttpStatus.BAD_REQUEST);
+    }
+    try {
+      let geoInfo = await this.authService.getGeoLocation(lat, lon);
+      return geoInfo
+    } catch (error) {
+      console.error('Error saving geolocation:', error);
+      throw new HttpException('Failed to save geolocation', HttpStatus.INTERNAL_SERVER_ERROR);
+    }
   }
 
 }
