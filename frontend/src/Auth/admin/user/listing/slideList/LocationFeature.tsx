@@ -4,11 +4,8 @@ import {
   FiMapPin,
   FiSearch,
   FiGlobe,
-  FiSmartphone,
   FiMail,
 } from "react-icons/fi";
-
-// Note: Removed the Fa* icons to use a consistent library (Fi* from react-icons/fi)
 
 const LocationFeature: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -61,9 +58,9 @@ const LocationFeature: React.FC = () => {
   };
 
   return (
-    <div className="w-full flex justify-center items-center min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 p-4 sm:p-8">
+    <div className="w-full flex justify-center items-center min-h-screen bg-gray-900 text-white p-4 sm:p-8">
       <motion.div
-        className="w-full max-w-6xl mx-auto bg-white rounded-3xl shadow-2xl overflow-hidden flex flex-col lg:flex-row"
+        className="w-full max-w-6xl mx-auto bg-gray-800 rounded-3xl shadow-2xl overflow-hidden flex flex-col lg:flex-row"
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.6 }}
@@ -75,10 +72,10 @@ const LocationFeature: React.FC = () => {
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.3 }}
           >
-            <h2 className="text-4xl font-bold text-gray-800 flex items-center gap-3 mb-2">
+            <h2 className="text-4xl font-bold text-white flex items-center gap-3 mb-2">
               <FiMapPin className="text-blue-500" /> Location Details
             </h2>
-            <p className="text-lg text-gray-500 mb-8">
+            <p className="text-lg text-gray-400 mb-8">
               Help us find your amazing property.
             </p>
           </motion.div>
@@ -93,7 +90,7 @@ const LocationFeature: React.FC = () => {
               >
                 <label
                   htmlFor={field.name}
-                  className="text-sm text-gray-700 mb-2 block font-medium flex items-center gap-2"
+                  className="text-sm text-gray-300 mb-2 block font-medium flex items-center gap-2"
                 >
                   {field.icon} {field.label}
                 </label>
@@ -108,8 +105,8 @@ const LocationFeature: React.FC = () => {
                     className={`w-full p-4 rounded-xl border ${
                       activeField === field.name
                         ? "border-blue-500 shadow-lg"
-                        : "border-gray-200"
-                    } focus:outline-none transition-all bg-gray-50 text-gray-900`}
+                        : "border-gray-700"
+                    } focus:outline-none transition-all bg-gray-700 text-white`}
                   >
                     <option value="" disabled>
                       {field.placeholder}
@@ -132,8 +129,8 @@ const LocationFeature: React.FC = () => {
                     className={`w-full p-4 rounded-xl border ${
                       activeField === field.name
                         ? "border-blue-500 shadow-lg"
-                        : "border-gray-200"
-                    } focus:outline-none transition-all bg-gray-50 text-gray-900`}
+                        : "border-gray-700"
+                    } focus:outline-none transition-all bg-gray-700 text-white`}
                   />
                 )}
               </motion.div>
@@ -148,7 +145,7 @@ const LocationFeature: React.FC = () => {
           animate="visible"
           variants={mapVariants}
         >
-          <div className="absolute inset-0 bg-gradient-to-br from-blue-100 to-purple-100 rounded-3xl p-8 flex items-center justify-center">
+          <div className="absolute inset-0 bg-gray-700 rounded-3xl p-8 flex items-center justify-center">
             <img
               src="https://via.placeholder.com/800x600.png?text=Interactive+Map+Placeholder"
               alt="Interactive Map Placeholder"
@@ -175,12 +172,12 @@ const LocationFeature: React.FC = () => {
                 <FiMapPin />
               </motion.div>
               <motion.div
-                className="mt-4 bg-white rounded-full shadow-md px-6 py-3"
+                className="mt-4 bg-gray-800 rounded-full shadow-md px-6 py-3"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 1, duration: 0.5 }}
               >
-                <span className="font-semibold text-gray-700">
+                <span className="font-semibold text-gray-200">
                   Your amazing location!
                 </span>
               </motion.div>
