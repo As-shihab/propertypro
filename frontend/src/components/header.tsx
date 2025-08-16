@@ -3,8 +3,10 @@ import { AiOutlineGlobal } from "react-icons/ai";
 import {
   FaEnvelope,
   FaInfoCircle,
+  FaMoon,
   FaPhone,
   FaSignInAlt,
+  FaSun,
   FaUserCheck,
   FaUserCircle,
   FaUserPlus,
@@ -20,6 +22,7 @@ import Login from "../Auth/Login";
 import { httpClient } from "../services/http";
 import { TbUserSquare } from "react-icons/tb";
 import { GlobalContext } from "../guard/GlobalContext";
+import { useTheme } from "../Context/Theme.context";
 
 export default function Header() {
   const [open, setOpen] = useState(false);
@@ -35,6 +38,8 @@ export default function Header() {
 
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
+  const { resolvedTheme, toggleTheme } = useTheme();
+
 
   // Close dropdown on outside click
   useEffect(() => {
@@ -48,7 +53,7 @@ export default function Header() {
   }, []);
 
   return (
-    <header className="border-b pb-3 border-slate-200">
+    <header className="border-b pb-3  bg-white border-slate-200">
       {/* Top Navigation */}
       <div className="flex items-center cursor-pointer justify-around list-none py-3">
 
@@ -201,6 +206,23 @@ export default function Header() {
                   >
                     <FaInfoCircle className="text-slate-500 text-xl" /> About
                   </NavLink>
+
+                  <button
+                    onClick={toggleTheme}
+                    className="flex items-center gap-2 px-4 py-2 rounded-md transition
+                 text-slate-700 dark:text-slate-200
+                 hover:bg-slate-100 dark:hover:bg-slate-800"
+                  >
+                    {resolvedTheme === "dark" ? (
+                      <>
+                        <FaSun className="text-yellow-400 text-lg" /> Light
+                      </>
+                    ) : (
+                      <>
+                        <FaMoon className="text-slate-500 text-lg" /> Dark
+                      </>
+                    )}
+                  </button>
 
                   {/* Contact */}
                   <NavLink

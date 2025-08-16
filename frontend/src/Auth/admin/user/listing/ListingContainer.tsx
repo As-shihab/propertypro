@@ -5,7 +5,7 @@ import MediaPricing from "./slideList/MediaPricing";
 import ReviewSubmit from "./slideList/ReviewSubmit";
 
 function ListingContainer() {
-  const [currentStep, setCurrentStep] = useState(1);
+  const [currentStep, setCurrentStep] = useState(2);
   const [hotelData, setHotelData] = useState<Record<string, any>>({});
 
   const totalSteps = 5; // Welcome + 4 steps
@@ -39,7 +39,7 @@ function ListingContainer() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-between p-4">
+    <div className=" h-[calc(100vh-79px)]   flex flex-col items-center justify-between p-4">
       {/* Main Content */}
       <div className="flex-1 flex items-center justify-center w-full">
         hello
