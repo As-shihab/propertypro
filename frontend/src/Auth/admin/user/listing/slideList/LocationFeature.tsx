@@ -76,7 +76,7 @@ const LocationFeature: React.FC<Step2LocationFeaturesProps> = ({
   };
 
   return (
-    <div className="h-screen w-full bg-gradient-to-br from-blue-50 to-purple-50 overflow-hidden">
+    <div className="h-[calc(100vh-490px)] w-full bg-gradient-to-br from-blue-50 to-purple-50 overflow-hidden">
       <div className="container mx-auto h-full flex items-center px-4 lg:px-10">
         <AnimatePresence>
           <motion.div 

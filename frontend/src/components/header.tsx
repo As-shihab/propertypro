@@ -53,7 +53,7 @@ export default function Header() {
   }, []);
 
   return (
-    <header className="border-b pb-3  bg-white border-slate-200">
+    <header className="border-b pb-3  hidden bg-white border-slate-200">
       {/* Top Navigation */}
       <div className="flex items-center cursor-pointer justify-around list-none py-3">
 
