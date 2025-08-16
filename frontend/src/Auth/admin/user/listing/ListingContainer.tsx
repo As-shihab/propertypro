@@ -1,42 +1,80 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import Welcome from "../listing/slideList/welcome";
+import BasicInfo from "./slideList/BasicInfo";
+import LocationFeature from "./slideList/LocationFeature";
 
 function ListingContainer() {
-  const [currentStep, setCurrentStep] = useState(3);
+  const [currentStep, setCurrentStep] = useState(1);
   const totalSteps = 5;
   const steps = ["Welcome", "Basic Info", "Location", "Media", "Review"];
+
+  // Track user selection
+  const [listingType, setListingType] = useState<"property" | "hotel" | "local" | null>(null);
+
+  const handleSelectListing = (type: "property" | "hotel" | "local") => {
+    setListingType(type);
+    setCurrentStep(2); // Move to next step
+  };
 
   return (
     <div className="relative h-screen flex flex-col bg-gray-50 dark:bg-gray-900">
       {/* Main Content */}
       <div className="flex-1 flex flex-col items-center justify-center overflow-auto gap-8 px-6">
         <AnimatePresence mode="wait">
-          <motion.div
-            key={currentStep}
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -30 }}
-            transition={{ duration: 0.5 }}
-            className="text-center"
-          >
-            <h1 className="text-4xl md:text-5xl font-extrabold text-gray-800 dark:text-white mb-4">
-              Step {currentStep}
-            </h1>
-            <p className="text-lg md:text-xl text-gray-600 dark:text-gray-300">
-              Here goes your content for this step.
-            </p>
-          </motion.div>
+          {/* Welcome Step */}
+          {currentStep === 1 && (
+            <motion.div
+              key="welcome"
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -30 }}
+              transition={{ duration: 0.5 }}
+              className="w-full h-full flex items-center justify-center"
+            >
+              <Welcome onSelectListing={handleSelectListing} />
+            </motion.div>
+          )}
+
+          {/* Basic Info Step */}
+          {currentStep === 2 && listingType && (
+            <motion.div
+              key="basicInfo"
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -30 }}
+              transition={{ duration: 0.5 }}
+              className="w-full flex justify-center"
+            >
+              <BasicInfo listingType={listingType} />
+            </motion.div>
+          )}
+
+          {/* Placeholder for future steps */}
+          {currentStep == 3 && (
+       // inside your ListingContainer component's JSX
+<motion.div
+  key="location"
+  initial={{ opacity: 0, y: 30 }}
+  animate={{ opacity: 1, y: 0 }}
+  exit={{ opacity: 0, y: -30 }}
+  transition={{ duration: 0.5 }}
+  className="w-full flex justify-center"
+>
+  <LocationFeature />
+</motion.div>
+          )}
         </AnimatePresence>
       </div>
 
-      {/* Professional Bottom Bar */}
+      {/* Bottom Bar */}
       <motion.div
         initial={{ y: 100, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ type: "spring", stiffness: 120, damping: 20 }}
         className="fixed bottom-6 left-1/2 transform -translate-x-1/2 w-[90%] md:w-4/5 backdrop-blur-lg bg-white/30 dark:bg-gray-900/40 rounded-3xl shadow-2xl py-5 px-6 flex justify-between items-center z-50 border border-white/20 dark:border-gray-700"
       >
-        {/* Previous Button */}
+        {/* Previous */}
         <motion.button
           whileHover={{ scale: 1.1, boxShadow: "0 0 12px #3b82f6" }}
           whileTap={{ scale: 0.95 }}
@@ -74,7 +112,7 @@ function ListingContainer() {
           </div>
         </div>
 
-        {/* Next Button */}
+        {/* Next */}
         <motion.button
           whileHover={{ scale: 1.1, boxShadow: "0 0 12px #3b82f6" }}
           whileTap={{ scale: 0.95 }}

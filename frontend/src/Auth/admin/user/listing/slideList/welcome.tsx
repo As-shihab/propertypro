@@ -10,14 +10,13 @@ const Welcome = ({ onSelectListing }: WelcomeProps) => {
   const [selected, setSelected] = useState<null | "property" | "hotel" | "local">(null);
 
   const listingOptions = [
-    { type: "property", label: "Property", icon: <FaBuilding size={24} /> },
-    { type: "hotel", label: "Hotel", icon: <FaHotel size={24} /> },
-    { type: "local", label: "Local Room", icon: <FaHome size={24} /> },
+    { type: "property", label: "Property", icon: <FaBuilding size={28} /> },
+    { type: "hotel", label: "Hotel", icon: <FaHotel size={28} /> },
+    { type: "local", label: "Local Room", icon: <FaHome size={28} /> },
   ];
 
   return (
-    <div className="h-screen flex flex-col items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 px-6 text-center gap-12">
-      {/* Greeting */}
+    <div className="flex flex-col items-center justify-center gap-12 px-6 text-center h-full">
       <motion.div
         initial={{ opacity: 0, y: -40 }}
         animate={{ opacity: 1, y: 0 }}
@@ -31,7 +30,6 @@ const Welcome = ({ onSelectListing }: WelcomeProps) => {
         </p>
       </motion.div>
 
-      {/* Listing Options */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -48,16 +46,18 @@ const Welcome = ({ onSelectListing }: WelcomeProps) => {
             whileHover={{ scale: 1.05, boxShadow: "0 0 15px #3b82f6" }}
             whileTap={{ scale: 0.95 }}
             className={`flex flex-col items-center justify-center gap-3 py-8 rounded-2xl transition-all border-2
-                        ${
-                          selected === option.type
-                            ? "border-indigo-600 bg-indigo-50 dark:bg-indigo-900"
-                            : "border-gray-300 bg-white dark:bg-gray-800"
-                        } shadow-lg`}
+              ${
+                selected === option.type
+                  ? "border-indigo-600 bg-indigo-50 dark:bg-indigo-900"
+                  : "border-gray-300 bg-white dark:bg-gray-800"
+              } shadow-lg`}
           >
             <div className="text-indigo-600 dark:text-indigo-400">{option.icon}</div>
             <span
               className={`text-lg font-semibold ${
-                selected === option.type ? "text-indigo-600 dark:text-indigo-400" : "text-gray-700 dark:text-gray-200"
+                selected === option.type
+                  ? "text-indigo-600 dark:text-indigo-400"
+                  : "text-gray-700 dark:text-gray-200"
               }`}
             >
               {option.label}
