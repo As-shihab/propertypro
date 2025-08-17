@@ -1,16 +1,18 @@
-import { useState } from "react";
+import { use, useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Welcome from "../listing/slideList/welcome";
 import BasicInfo from "./slideList/BasicInfo";
 import LocationFeature from "./slideList/LocationFeature";
 import MediaSection from "./slideList/MediaSection";
 import PricingSection from "./slideList/PricingSection";
+import { ListingContext } from "../../../../Context/ListingContext";
+import { httpClient } from "../../../../services/http";
 
 function ListingContainer() {
   const [currentStep, setCurrentStep] = useState(1);
   const totalSteps = 5;
   const steps = ["Welcome", "Basic Info", "Location", "Media", "Review"];
-
+  const http =new httpClient();
   // Track user selection
   const [listingType, setListingType] = useState<"property" | "hotel" | "local" | null>(null);
 
@@ -19,7 +21,34 @@ function ListingContainer() {
     setCurrentStep(2); // Move to next step
   };
 
+
+  const [category, setCategory] = useState(null);
+  const [isLoading, setLoading] = useState(true);
+
+  useEffect(() => {
+
+    const FetchListingData = async () => {
+      if(currentStep ===1) {
+       if(!category) {
+        console.log("Fetching categories...");
+          setLoading(true);
+         await http.get("/odata/Categorys").then((response:any) => {
+           setCategory(response.data.value);
+            setLoading(false);
+         }).catch((error) => {
+           console.error("Error fetching categories:", error);
+         });
+        }
+      }
+    }
+
+    FetchListingData();
+  },[currentStep])
+
+
+
   return (
+    <ListingContext.Provider value={{ listingType, setListingType , category ,isLoading }}>
     <div className="relative h-screen flex flex-col bg-gray-50 dark:bg-gray-900">
       {/* Main Content */}
       <div className="flex-1 flex flex-col items-center justify-center overflow-auto gap-8 px-6">
@@ -96,12 +125,6 @@ function ListingContainer() {
             </motion.div>
           )}
 
-
-
-
-
-
-
         </AnimatePresence>
       </div>
 
@@ -162,6 +185,7 @@ function ListingContainer() {
         </motion.button>
       </motion.div>
     </div>
+    </ListingContext.Provider>
   );
 }
 

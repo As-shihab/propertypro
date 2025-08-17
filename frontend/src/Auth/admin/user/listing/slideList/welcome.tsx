@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { motion } from "framer-motion";
 import { FaBuilding, FaHotel, FaHome } from "react-icons/fa";
+import { ListingContext } from "../../../../../Context/ListingContext";
 
 interface WelcomeProps {
   onSelectListing: (type: "property" | "hotel" | "local") => void;
@@ -8,7 +9,7 @@ interface WelcomeProps {
 
 const Welcome = ({ onSelectListing }: WelcomeProps) => {
   const [selected, setSelected] = useState<null | "property" | "hotel" | "local">(null);
-
+  const {category , isLoading} = useContext(ListingContext);
   const listingOptions = [
     { type: "property", label: "Property", icon: <FaBuilding size={28} /> },
     { type: "hotel", label: "Hotel", icon: <FaHotel size={28} /> },
@@ -36,34 +37,34 @@ const Welcome = ({ onSelectListing }: WelcomeProps) => {
         transition={{ duration: 0.7, delay: 0.3 }}
         className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-4xl"
       >
-        {listingOptions.map((option) => (
+        {!isLoading && category ? Object.values(category).map((option:any) => (
           <motion.button
-            key={option.type}
+            key={option?.name}
             onClick={() => {
-              setSelected(option.type as any);
-              onSelectListing(option.type as any);
+              setSelected(option?.name as any);
+              onSelectListing(option?.name as any);
             }}
             whileHover={{ scale: 1.05, boxShadow: "0 0 15px #3b82f6" }}
             whileTap={{ scale: 0.95 }}
             className={`flex flex-col items-center justify-center gap-3 py-8 rounded-2xl transition-all border-2
               ${
-                selected === option.type
+                selected === option?.name
                   ? "border-indigo-600 bg-indigo-50 dark:bg-indigo-900"
                   : "border-gray-300 bg-white dark:bg-gray-800"
               } shadow-lg`}
           >
-            <div className="text-indigo-600 dark:text-indigo-400">{option.icon}</div>
-            <span
+            <div className="text-indigo-600 dark:text-indigo-400">{`<${option.icon} />`}</div>
+             <span
               className={`text-lg font-semibold ${
-                selected === option.type
+                selected === option?.name
                   ? "text-indigo-600 dark:text-indigo-400"
                   : "text-gray-700 dark:text-gray-200"
               }`}
             >
-              {option.label}
-            </span>
+              {option?.name}
+            </span> 
           </motion.button>
-        ))}
+        )) : "Loading..."}
       </motion.div>
     </div>
   );
