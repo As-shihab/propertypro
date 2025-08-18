@@ -1,4 +1,3 @@
-
 model User {
     id        Int      @id @default(autoincrement())
     email     String   @unique
@@ -33,14 +32,16 @@ model Profile {
 }
 
 model Session {
-    id        Int     @id @default(autoincrement())
+    id        Int      @id @default(autoincrement())
     userId    Int
-    user      User    @relation(fields: [userId], references: [id])
+    user      User     @relation(fields: [userId], references: [id])
     device    String?
     ipAddress String?
     userAgent String?
-    active   Boolean  @default(true)
-    lastUsed DateTime @default(now())
+    latitude  Float?
+    longitude Float?
+    active    Boolean  @default(true)
+    lastUsed  DateTime @default(now())
     createdAt DateTime @default(now())
     expiresAt DateTime
 
@@ -48,15 +49,15 @@ model Session {
 }
 
 model Token {
-    id        Int      @id @default(autoincrement())
-    userId    Int
-    user      User     @relation(fields: [userId], references: [id])
-    token     String   @unique
-    type      String
-    createdAt DateTime @default(now())
-    expiresAt DateTime
-    used      Boolean  @default(false)
-
+    id           Int       @id @default(autoincrement())
+    userId       Int
+    user         User      @relation(fields: [userId], references: [id])
+    token        String    
+    otp          String?
+    type         String
+    createdAt    DateTime  @default(now())
+    expiresAt    DateTime
+    used         Boolean   @default(false)
     @@map("tokens")
 }
 
@@ -79,6 +80,7 @@ model Permission {
     roles       RolePermission[]
 
     Role Role[]
+
     @@map("permissions")
 }
 

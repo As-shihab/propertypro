@@ -16,7 +16,7 @@ const Login: React.FC<LoginProps> = ({ switchToSignup }) => {
   const [errors, setErrors] = useState<{ email?: string; password?: string ,unauthorized?:string}>({});
 
   let http = new httpClient();
-
+  console.log(googleLoad);
   const [user, setUser] = useState({
     email: "",
     password: "",
@@ -92,10 +92,11 @@ console.log("Google Client ID:", res.data.googleClientId);
 }
 
 
-const handleGoogleLogin = () => {
-  setGoogleLoad(true);
-  }
-handleGoogleLogin();
+// const handleGoogleLogin = () => {
+//   setGoogleLoad(true);
+//   }
+
+
   return (
     <motion.form
       key="login"

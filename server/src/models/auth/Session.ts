@@ -17,6 +17,12 @@ export class Session {
   @Edm.String
   userAgent?: string;
 
+  @Edm.Double
+  latitude?: number;
+
+  @Edm.Double
+  longitude?: number;
+
   @Edm.Boolean
   active: boolean;
 

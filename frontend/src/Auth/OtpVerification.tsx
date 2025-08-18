@@ -27,15 +27,6 @@ const OtpVerification: React.FC<{ email?: string }> = ({ email }) => {
   };
 
 
-const createProfile = async () => {
-
-  http.post(http.authUrl + "/api/auth/create-profile", {})
-  .then((res) => {
-    console.log(res.data, "create profile response");
-  })
-
-
-}
 
   const HandleVerifyOtp = async () => {
     const otpString = otp.join("");
@@ -45,10 +36,14 @@ const createProfile = async () => {
     setLoading(true);
     setMessage("");
     await http
-      .post(http.authUrl + "/api/user/verify-otp", { otp: otpString })
+      .post("/api/auth/verify-otp", { otp: otpString })
       .then((res: any) => {
-        console.log(res )
-  createProfile();
+        console.log(res.data, "verify otp response");
+        setMessage("OTP verified successfully!");
+        setOtp(Array(6).fill(""));
+        setLoading(false);
+        setDisable(false);
+        // Optionally redirect or update UI after successful verification
       })
       .catch((err) => {
         console.error(err.response.data.message);

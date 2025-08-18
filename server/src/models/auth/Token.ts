@@ -12,6 +12,9 @@ export class Token {
   token: string;
 
   @Edm.String
+  otp?: string;
+
+  @Edm.String
   type: string;
 
   @Edm.DateTimeOffset

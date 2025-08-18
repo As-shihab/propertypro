@@ -3,8 +3,10 @@ import { AiOutlineGlobal } from "react-icons/ai";
 import {
   FaEnvelope,
   FaInfoCircle,
+  FaMoon,
   FaPhone,
   FaSignInAlt,
+  FaSun,
   FaUserCheck,
   FaUserCircle,
   FaUserPlus,
@@ -20,6 +22,7 @@ import Login from "../Auth/Login";
 import { httpClient } from "../services/http";
 import { TbUserSquare } from "react-icons/tb";
 import { GlobalContext } from "../guard/GlobalContext";
+import { useTheme } from "../Context/Theme.context";
 
 export default function Header() {
   const [open, setOpen] = useState(false);
@@ -27,7 +30,7 @@ export default function Header() {
   const [email, setEmail] = useState<string>("");
   const http = new httpClient();
   const { user, gfilter } = useContext(GlobalContext);
-console.log(user, "user in header");
+  console.log(user, "user in header");
   const handleClose = () => {
     setOpen(false);
     setTimeout(() => setMode("login"), 300);
@@ -35,6 +38,8 @@ console.log(user, "user in header");
 
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
+  const { resolvedTheme, toggleTheme } = useTheme();
+
 
   // Close dropdown on outside click
   useEffect(() => {
@@ -48,27 +53,46 @@ console.log(user, "user in header");
   }, []);
 
   return (
-    <header className="border-b pb-3 border-slate-200">
+    <header className="border-b pb-3  hidden bg-white border-slate-200">
       {/* Top Navigation */}
       <div className="flex items-center cursor-pointer justify-around list-none py-3">
+
         <h1
-          onClick={() => {
-            location.href = "/";
-          }}
-          className="flex items-center text-3xl font-bold text-blue-600 cursor-pointer uppercase tracking-wider transition-all duration-300 transform hover:text-blue-800 hover:scale-110"
+          onClick={() => { location.href = "/"; }}
+          className="flex items-center gap-3 text-3xl font-extrabold cursor-pointer group select-none"
+          aria-label="Aptigen Home"
         >
-          <svg
-            className="w-8 h-8 mr-3"
-            fill="currentColor"
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path d="M12 2L2 7l1.5 1.5L12 4l8.5 4.5L22 7l-10-5z" />
-            <path d="M12 12l-8.5 4.5L2 17l10 5 10-5-1.5-1.5L12 12z" />
-          </svg>
-          PropertyPro
+          {/* Animated Icon */}
+          <div className="relative">
+            {/* Glow ring */}
+            <span className="absolute inset-0 rounded-full blur-md bg-blue-500 opacity-0 group-hover:opacity-50 transition-opacity duration-500"></span>
+
+            <svg
+              className="relative z-10 w-10 h-10 text-blue-600 group-hover:text-blue-800 transition-colors duration-300 transform group-hover:rotate-12 group-hover:scale-110"
+              fill="currentColor"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+            >
+              <path d="M12 2L2 7l1.5 1.5L12 4l8.5 4.5L22 7l-10-5z" />
+              <path d="M12 12l-8.5 4.5L2 17l10 5 10-5-1.5-1.5L12 12z" />
+            </svg>
+          </div>
+
+          {/* Brand Text */}
+          <span className="relative inline-block">
+            <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-600 via-blue-500 to-blue-400 
+      group-hover:from-blue-800 group-hover:via-blue-700 group-hover:to-blue-600 
+      transition-all duration-700 group-hover:scale-105 inline-block">
+              Aptigen
+            </span>
+
+            {/* Shimmer effect */}
+            <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent 
+      animate-[shimmer_2s_infinite] bg-clip-text text-transparent"></span>
+          </span>
         </h1>
+
+
 
         <div className="flex gap-3">
           <li className="nav cursor-pointer">
@@ -88,7 +112,7 @@ console.log(user, "user in header");
 
           <div className="relative" ref={menuRef}>
             {/* Avatar Button */}
-            
+
             <div
               className="rounded-full flex cursor-pointer py-2 px-4 items-center gap-3 shadow-md hover:shadow-lg transition duration-200 bg-white border"
               onClick={() => setDropdownOpen((prev) => !prev)}
@@ -183,6 +207,23 @@ console.log(user, "user in header");
                     <FaInfoCircle className="text-slate-500 text-xl" /> About
                   </NavLink>
 
+                  <button
+                    onClick={toggleTheme}
+                    className="flex items-center gap-2 px-4 py-2 rounded-md transition
+                 text-slate-700 dark:text-slate-200
+                 hover:bg-slate-100 dark:hover:bg-slate-800"
+                  >
+                    {resolvedTheme === "dark" ? (
+                      <>
+                        <FaSun className="text-yellow-400 text-lg" /> Light
+                      </>
+                    ) : (
+                      <>
+                        <FaMoon className="text-slate-500 text-lg" /> Dark
+                      </>
+                    )}
+                  </button>
+
                   {/* Contact */}
                   <NavLink
                     to="/contact"
@@ -262,10 +303,10 @@ console.log(user, "user in header");
           mode === "login"
             ? "Login"
             : mode === "signup"
-            ? "Sign Up"
-            : mode === "otp"
-            ? "OTP Verification"
-            : ""
+              ? "Sign Up"
+              : mode === "otp"
+                ? "OTP Verification"
+                : ""
         }
       >
         <AnimatePresence mode="wait">
