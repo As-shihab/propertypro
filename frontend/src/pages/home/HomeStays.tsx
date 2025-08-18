@@ -1,7 +1,7 @@
-import {  useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import GlobalFilter from "../../components/GlobalFilter/GlobalFilter";
 import Card from "../../components/card/Card";
-import { GlobalContext } from "../../guard/GlobalContext";
+// import { GlobalContext } from "../../guard/GlobalContext";
 // import { useScrollInfo } from "../../helpers/scrollWatcher";
 // import { useGeoLocation } from "../../helpers/geoLocation";
 import { httpClient } from "../../services/http";
