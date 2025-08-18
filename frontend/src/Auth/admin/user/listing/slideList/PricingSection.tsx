@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { FaDollarSign, FaPlus, FaTrash, FaEdit, FaCheckCircle } from "react-icons/fa";
+import { FaDollarSign, FaPlus, FaTrash, FaEdit } from "react-icons/fa";
 
 // A simple, robust ID generator
 const generateId = (): string => Date.now().toString(36) + Math.random().toString(36).substr(2, 5);

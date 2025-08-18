@@ -1,6 +1,6 @@
 import { useContext, useState } from "react";
 import { motion } from "framer-motion";
-import { FaBuilding, FaHotel, FaHome } from "react-icons/fa";
+// import { FaBuilding, FaHotel, FaHome } from "react-icons/fa";
 import { ListingContext } from "../../../../../Context/ListingContext";
 
 interface WelcomeProps {
@@ -10,11 +10,11 @@ interface WelcomeProps {
 const Welcome = ({ onSelectListing }: WelcomeProps) => {
   const [selected, setSelected] = useState<null | "property" | "hotel" | "local">(null);
   const {category , isLoading} = useContext(ListingContext);
-  const listingOptions = [
-    { type: "property", label: "Property", icon: <FaBuilding size={28} /> },
-    { type: "hotel", label: "Hotel", icon: <FaHotel size={28} /> },
-    { type: "local", label: "Local Room", icon: <FaHome size={28} /> },
-  ];
+  // const listingOptions = [
+  //   { type: "property", label: "Property", icon: <FaBuilding size={28} /> },
+  //   { type: "hotel", label: "Hotel", icon: <FaHotel size={28} /> },
+  //   { type: "local", label: "Local Room", icon: <FaHome size={28} /> },
+  // ];
 
   return (
     <div className="flex flex-col items-center justify-center gap-12 px-6 text-center h-full">

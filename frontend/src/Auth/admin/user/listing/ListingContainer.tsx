@@ -1,4 +1,4 @@
-import { use, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Welcome from "../listing/slideList/welcome";
 import BasicInfo from "./slideList/BasicInfo";

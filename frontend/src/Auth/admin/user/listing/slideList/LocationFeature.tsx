@@ -1,10 +1,9 @@
 import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion} from "framer-motion";
 import {
   FiMapPin,
   FiSearch,
   FiGlobe,
-  FiMail,
 } from "react-icons/fi";
 
 const LocationFeature: React.FC = () => {
