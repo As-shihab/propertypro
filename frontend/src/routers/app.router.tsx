@@ -1,6 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { lazy } from "react";
-import PropertyPro from "../pages/home/PropertyPro";
+import PropertyPro from "../pages/home/HomeStays";
 import ProductOverview from "../components/CardView/cardView";
 import NotFound404 from "../pages/notfound/notfound404";
 import ListingContainer from "../Auth/admin/user/listing/ListingContainer";

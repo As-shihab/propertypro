@@ -8,6 +8,7 @@ function App() {
   const [user, setUser] = useState();
   const [loading, setLoading] = useState(false);
   const [gfilter, setGfilter] = useState(false);
+  const [isHideHeader, setIsHideHeader] = useState(false);
   const http = new httpClient();
 
   const fetchUser = useFetchUser();
@@ -33,7 +34,7 @@ function App() {
 
   return (
     <GlobalContext.Provider
-      value={{ user, setUser, setLoading, http, loading, gfilter, setGfilter }}
+      value={{ user, setUser, setLoading, http, loading, gfilter, setGfilter , setIsHideHeader, isHideHeader }}
     >
       <AppRouter />
     </GlobalContext.Provider>

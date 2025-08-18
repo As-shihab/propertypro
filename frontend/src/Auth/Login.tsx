@@ -13,7 +13,7 @@ const Login: React.FC<LoginProps> = ({ switchToSignup }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [googleLoad, setGoogleLoad] = useState(false);
-  const [errors, setErrors] = useState<{ email?: string; password?: string ,unauthorized?:string}>({});
+  const [errors, setErrors] = useState<{ email?: string; password?: string, unauthorized?: string }>({});
 
   let http = new httpClient();
   console.log(googleLoad);
@@ -65,12 +65,12 @@ const Login: React.FC<LoginProps> = ({ switchToSignup }) => {
 
     http
       .post("/api/auth/login", user)
-      .then((res :any) => {
-         http.saveToken("token", res.data.access_token);
-         location.reload();
+      .then((res: any) => {
+        http.saveToken("token", res.data.access_token);
+        location.reload();
       })
       .catch((err) => {
-        setErrors((prev) => ({ ...prev, unauthorized: err?.response?.data?.message}));
+        setErrors((prev) => ({ ...prev, unauthorized: err?.response?.data?.message }));
         console.log(err, "error message");
       })
       .finally(() => {
@@ -79,22 +79,22 @@ const Login: React.FC<LoginProps> = ({ switchToSignup }) => {
   };
 
 
-const LoginGoogle =async () => {
-setGoogleLoad(true);
-  await http.get("auth/google-client-id")
-  .then((res: any)=>{
-console.log("Google Client ID:", res.data.googleClientId);
+  const LoginGoogle = async () => {
+    setGoogleLoad(true);
+    await http.get("auth/google-client-id")
+      .then((res: any) => {
+        console.log("Google Client ID:", res.data.googleClientId);
 
-  })
-
-
-
-}
+      })
 
 
-// const handleGoogleLogin = () => {
-//   setGoogleLoad(true);
-//   }
+
+  }
+
+
+  // const handleGoogleLogin = () => {
+  //   setGoogleLoad(true);
+  //   }
 
 
   return (
@@ -114,9 +114,8 @@ console.log("Google Client ID:", res.data.googleClientId);
         <input
           type="text"
           placeholder="Enter your email or phone"
-          className={`w-full px-4 py-2 border ${
-            errors.email ? "border-red-500" : "border-gray-300"
-          } rounded-md`}
+          className={`w-full px-4 py-2 border ${errors.email ? "border-red-500" : "border-gray-300"
+            } rounded-md`}
           onChange={(e) => handleEmailChange(e.target.value)}
           value={user.email}
         />
@@ -134,9 +133,8 @@ console.log("Google Client ID:", res.data.googleClientId);
           <input
             type={showPassword ? "text" : "password"}
             placeholder="Enter your password"
-            className={`w-full px-4 py-2 border ${
-              errors.password ? "border-red-500" : "border-gray-300"
-            } rounded-md pr-10`}
+            className={`w-full px-4 py-2 border ${errors.password ? "border-red-500" : "border-gray-300"
+              } rounded-md pr-10`}
             onChange={(e) => handlePasswordChange(e.target.value)}
             value={user.password}
           />
@@ -150,9 +148,9 @@ console.log("Google Client ID:", res.data.googleClientId);
         </div>
         {errors.password ? (
           <p className="text-sm text-red-500 mt-1">{errors.password}</p>
-        ) : errors.unauthorized?(
+        ) : errors.unauthorized ? (
           <p className="text-sm text-red-500 mt-1">{errors.unauthorized}</p>
-        ):null}
+        ) : null}
         <div className="text-right mt-1">
           <button
             type="button"
@@ -193,7 +191,7 @@ console.log("Google Client ID:", res.data.googleClientId);
       {/* Google Login */}
       <button
         type="button"
-        onClick={() =>LoginGoogle()}
+        onClick={() => LoginGoogle()}
         className="w-full flex items-center justify-center cursor-pointer gap-2 border border-gray-300 rounded-md py-2 hover:bg-gray-100 transition"
       >
         <img

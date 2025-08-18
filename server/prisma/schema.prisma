@@ -1,26 +1,28 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
 datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
 }
 
-generator client {
-  provider = "prisma-client-js"
-}
-
 // 🌍 Module: auth
 model User {
-  id        Int      @id @default(autoincrement())
-  email     String   @unique
+  id        Int        @id @default(autoincrement())
+  email     String     @unique
   password  String
   name      String?
-  verified  Boolean  @default(false)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  profile  Profile?
-  sessions Session[]
-  tokens   Token[]
-  roles    UserRole[]
+  verified  Boolean    @default(false)
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  reviews   Review[]
+  profile   Profile?
+  sessions  Session[]
+  tokens    Token[]
+  roles     UserRole[]
+  products  Product[]
+  bookings  Booking[]
 
   @@map("users")
 }
@@ -116,28 +118,162 @@ model RolePermission {
 }
 
 // 🌍 Module: product
-// Product Database initialization code here
-
 model Category {
-  id        Int       @id @default(autoincrement())
-  name      String    @unique
-  products  Product[]
-  icon      String?
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  id          Int       @id @default(autoincrement())
+  name        String    @unique
+  slug        String?   @unique
+  description String?
+  icon        String?
+  isActive    Boolean   @default(true)
+  priority    Int       @default(0)
+  products    Product[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  metadata    Json?
 
   @@map("categories")
 }
 
 model Product {
   id          Int      @id @default(autoincrement())
-  name        String
+  name        String?
   description String?
-  price       Float
-  categoryId  Int
   category    Category @relation(fields: [categoryId], references: [id])
+  categoryId  Int
+  status      String   @default("draft")
+  featured    Boolean  @default(false)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
+  // Relations
+  location  Location?
+  pricing   Pricing?
+  roomTypes RoomType[]
+  amenities Amenity[]
+  reviews   Review[]
+  bookings  Booking[]
+  User      User?      @relation(fields: [userId], references: [id])
+  userId    Int?
+
+  @@index([categoryId])
   @@map("products")
+}
+
+model Location {
+  id           Int     @id @default(autoincrement())
+  product      Product @relation(fields: [productId], references: [id])
+  productId    Int     @unique
+  street       String
+  city         String
+  state        String?
+  country      String
+  postalCode   String?
+  latitude     Float?
+  longitude    Float?
+  timezone     String?
+  neighborhood String?
+  landmarks    String?
+  description  String?
+  airportCode  String?
+  metroAccess  Boolean @default(false)
+
+  @@index([city, country])
+  @@index([latitude, longitude])
+  @@map("locations")
+}
+
+model Pricing {
+  id                 Int     @id @default(autoincrement())
+  product            Product @relation(fields: [productId], references: [id])
+  productId          Int     @unique
+  basePrice          Float   @default(0.0)
+  currency           String  @default("USD")
+  taxRate            Float   @default(0.0)
+  cleaningFee        Float?  @default(0.0)
+  resortFee          Float?  @default(0.0)
+  securityDeposit    Float?  @default(0.0)
+  weeklyDiscount     Float?  @default(0.0)
+  monthlyDiscount    Float?  @default(0.0)
+  minStayDiscount    Json?
+  seasonalRates      Json?
+  acceptsCreditCards Boolean @default(true)
+  paymentPolicy      String?
+
+  @@map("pricings")
+}
+
+model Booking {
+  id         Int      @id @default(autoincrement())
+  product    Product  @relation(fields: [productId], references: [id])
+  productId  Int
+  user       User     @relation(fields: [userId], references: [id])
+  userId     Int
+  checkIn    DateTime
+  checkOut   DateTime
+  guests     Int
+  totalPrice Float
+  status     String   @default("pending")
+  payment    Json?
+  createdAt  DateTime @default(now())
+
+  @@index([productId])
+  @@index([userId])
+  @@index([checkIn, checkOut])
+  @@map("bookings")
+}
+
+model Review {
+  id        Int      @id @default(autoincrement())
+  product   Product  @relation(fields: [productId], references: [id])
+  productId Int
+  user      User     @relation(fields: [userId], references: [id])
+  userId    Int
+  rating    Int
+  comment   String?
+  createdAt DateTime @default(now())
+
+  @@index([productId])
+  @@index([userId])
+  @@map("reviews")
+}
+
+model RoomType {
+  id          Int       @id @default(autoincrement())
+  product     Product   @relation(fields: [productId], references: [id])
+  productId   Int
+  name        String
+  description String?
+  maxGuests   Int       @default(1)
+  sizeSqFt    Int?
+  quantity    Int       @default(1)
+  basePrice   Float?
+  amenities   Amenity[]
+
+  @@index([productId])
+  @@map("room_types")
+}
+
+model Amenity {
+  id          Int             @id @default(autoincrement())
+  name        String          @unique
+  icon        String?
+  category    AmenityCategory
+  isFeatured  Boolean         @default(false)
+  description String?
+  products    Product[]
+  RoomType    RoomType?       @relation(fields: [roomTypeId], references: [id])
+  roomTypeId  Int?
+
+  @@map("amenities")
+}
+
+enum AmenityCategory {
+  GENERAL
+  ROOM
+  BATHROOM
+  KITCHEN
+  ACCESSIBILITY
+  SAFETY
+  OUTDOOR
+  SERVICES
 }

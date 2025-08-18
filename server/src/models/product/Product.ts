@@ -6,20 +6,38 @@ export class Product {
   id: number;
 
   @Edm.String
-  name: string;
+  name?: string;
 
   @Edm.String
   description?: string;
 
-  @Edm.Double
-  price: number;
-
   @Edm.Int32
   categoryId: number;
+
+  @Edm.String
+  status: string;
+
+  @Edm.Boolean
+  featured: boolean;
 
   @Edm.DateTimeOffset
   createdAt: Date;
 
   @Edm.DateTimeOffset
   updatedAt: Date;
+
+  location?: any;
+
+  pricing?: any;
+
+  roomTypes: any;
+
+  amenities: any;
+
+  reviews: any;
+
+  bookings: any;
+
+  @Edm.Int32
+  userId?: number;
 }

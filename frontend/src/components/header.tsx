@@ -29,7 +29,7 @@ export default function Header() {
   const [mode, setMode] = useState<"login" | "signup" | "otp">("login");
   const [email, setEmail] = useState<string>("");
   const http = new httpClient();
-  const { user, gfilter } = useContext(GlobalContext);
+  const { user, gfilter , isHideHeader } = useContext(GlobalContext);
   console.log(user, "user in header");
   const handleClose = () => {
     setOpen(false);
@@ -53,7 +53,7 @@ export default function Header() {
   }, []);
 
   return (
-    <header className="border-b pb-3  hidden bg-white border-slate-200">
+    <header className={`border-b pb-3 ${isHideHeader? `hidden` : `block`}  bg-white border-slate-200`}>
       {/* Top Navigation */}
       <div className="flex items-center cursor-pointer justify-around list-none py-3">
 

@@ -8,14 +8,28 @@ export class Category {
   @Edm.String
   name: string;
 
-  products: any;
+  @Edm.String
+  slug?: string;
+
+  @Edm.String
+  description?: string;
 
   @Edm.String
   icon?: string;
+
+  @Edm.Boolean
+  isActive: boolean;
+
+  @Edm.Int32
+  priority: number;
+
+  products: any;
 
   @Edm.DateTimeOffset
   createdAt: Date;
 
   @Edm.DateTimeOffset
   updatedAt: Date;
+
+  metadata?: any;
 }
