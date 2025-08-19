@@ -23,6 +23,7 @@ model User {
   roles     UserRole[]
   products  Product[]
   bookings  Booking[]
+  Media     Media[]
 
   @@map("users")
 }
@@ -140,7 +141,11 @@ model Product {
   description String?
   category    Category @relation(fields: [categoryId], references: [id])
   categoryId  Int
-  status      String   @default("draft")
+  isActive    Boolean  @default(true)
+  isArchived  Boolean  @default(false)
+  isComplete  Int      @default(0)
+  currentStep Int      @default(1)
+  status      String   @default("good")
   featured    Boolean  @default(false)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
@@ -153,7 +158,8 @@ model Product {
   reviews   Review[]
   bookings  Booking[]
   User      User?      @relation(fields: [userId], references: [id])
-  userId    Int?
+  userId    Int
+  Media     Media[]
 
   @@index([categoryId])
   @@map("products")
@@ -276,4 +282,29 @@ enum AmenityCategory {
   SAFETY
   OUTDOOR
   SERVICES
+}
+
+// Media Database initialization code here
+
+// 🌍 Module: media
+// Media Database initialization code here
+model Media {
+  id         Int      @id @default(autoincrement())
+  productId  Int?
+  userId     Int?
+  fileName   String?
+  filePath   String?
+  fileType   String?
+  fileSize   Int?
+  altText    String?
+  isFeatured Boolean  @default(false)
+  metadata   Json?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  // Relations
+  product Product? @relation(fields: [productId], references: [id])
+  user    User?    @relation(fields: [userId], references: [id])
+
+  @@map("medias")
 }

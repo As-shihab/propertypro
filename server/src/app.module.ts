@@ -1,3 +1,4 @@
+import { MediaModule } from '@module/media/media.module';
 import { AuthModule } from '@module/auth/auth.module';
 
 import { Module } from '@nestjs/common';
@@ -7,6 +8,7 @@ import { apiRoutes } from '../src/routers/api.router';
 
 @Module({
   imports: [
+    MediaModule,
     AuthModule,
     RouterModule.register([
       {

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   FaInfoCircle,
@@ -32,6 +32,7 @@ import {
   FaCoffee,
 } from "react-icons/fa";
 import { FaChild } from "react-icons/fa6";
+import { ListingContext } from "../../../../../Context/ListingContext";
 
 type BasicInfoProps = {
   listingType: "property" | "hotel" | "local";
@@ -105,7 +106,7 @@ const SelectWithIcon = ({ icon, options, ...props }: any) => (
 );
 
 const BasicInfo = ({ listingType, onChange }: BasicInfoProps) => {
-  const [currentSlide, setCurrentSlide] = useState(0);
+  const { setBasicinfoStep , basicinfoStep} = useContext(ListingContext);
   const [showAmenitiesModal, setShowAmenitiesModal] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [formData, setFormData] = useState({
@@ -150,14 +151,14 @@ const BasicInfo = ({ listingType, onChange }: BasicInfoProps) => {
   };
 
   const allSlides = [
-    { title: "General Info", icon: <FaInfoCircle /> },
-    { title: "Contact & Website", icon: <FaEnvelope /> },
-    { title: "Amenities & Policies", icon: <FaLock /> },
-    { title: "Social Links", icon: <FaFacebook /> },
+    { title: "General Info", color: '', icon: <FaInfoCircle /> },
+    { title: "Contact & Website", color: '', icon: <FaEnvelope /> },
+    { title: "Amenities & Policies", color: '', icon: <FaLock /> },
+    { title: "Social Links", color: '', icon: <FaFacebook /> },
   ];
 
-  if (listingType === "hotel") {
-    allSlides.splice(2, 0, { title: "Rooms & Stars", icon: <FaBed /> });
+  if (listingType.toLowerCase().trim() === "hotel") {
+    allSlides.splice(2, 0, { title: "Rooms & Stars", color: '', icon: <FaBed /> });
   }
 
   const amenitiesOptions = [
@@ -189,89 +190,89 @@ const BasicInfo = ({ listingType, onChange }: BasicInfoProps) => {
       {/* Form Content Area */}
       <div className="flex-1 overflow-auto pr-8">
         <h2 className="text-3xl font-bold mb-2 text-gray-800 dark:text-white flex items-center gap-3">
-          {allSlides[currentSlide].icon} {allSlides[currentSlide].title}
+          {allSlides[basicinfoStep].icon} {allSlides[basicinfoStep].title}
         </h2>
         <p className="text-gray-600 dark:text-gray-400 mb-8">
           Provide the basic details for your **{listingType}** listing.
         </p>
 
         <AnimatePresence mode="wait">
-          {currentSlide ===
+          {basicinfoStep ===
             allSlides.findIndex((s) => s.title === "General Info") && (
-            <motion.div
-              key="general"
-              initial={{ opacity: 0, x: 100 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -100 }}
-              transition={{ duration: 0.4 }}
-              className="grid grid-cols-1 md:grid-cols-2 gap-6"
-            >
-              <InputWithIcon
-                name="name"
-                value={formData.name}
-                onChange={handleChange}
-                placeholder={
-                  listingType === "hotel" ? "Hotel Name" : "Property Name"
-                }
-                icon={listingType === "hotel" ? <FaHotel /> : <FaHome />}
-              />
-              <InputWithIcon
-                name="address"
-                value={formData.address}
-                onChange={handleChange}
-                placeholder="Address"
-                icon={<FaBuilding />}
-              />
-              <TextareaWithIcon
-                name="description"
-                value={formData.description}
-                onChange={handleChange}
-                placeholder="Description"
-                icon={<FaInfoCircle />}
-              />
-            </motion.div>
-          )}
+              <motion.div
+                key="general"
+                initial={{ opacity: 0, x: 100 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -100 }}
+                transition={{ duration: 0.4 }}
+                className="grid grid-cols-1 md:grid-cols-2 gap-6"
+              >
+                <InputWithIcon
+                  name="name"
+                  value={formData.name}
+                  onChange={handleChange}
+                  placeholder={
+                    listingType.toLocaleLowerCase().trim() === "hotel" ? "Hotel Name" : "Property Name"
+                  }
+                  icon={listingType === "hotel" ? <FaHotel /> : <FaHome />}
+                />
+                <InputWithIcon
+                  name="address"
+                  value={formData.address}
+                  onChange={handleChange}
+                  placeholder="Address"
+                  icon={<FaBuilding />}
+                />
+                <TextareaWithIcon
+                  name="description"
+                  value={formData.description}
+                  onChange={handleChange}
+                  placeholder="Description"
+                  icon={<FaInfoCircle />}
+                />
+              </motion.div>
+            )}
 
-          {currentSlide ===
+          {basicinfoStep ===
             allSlides.findIndex((s) => s.title === "Contact & Website") && (
-            <motion.div
-              key="contact"
-              initial={{ opacity: 0, x: 100 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -100 }}
-              transition={{ duration: 0.4 }}
-              className="grid grid-cols-1 md:grid-cols-2 gap-6"
-            >
-              <InputWithIcon
-                type="email"
-                name="contactEmail"
-                value={formData.contactEmail}
-                onChange={handleChange}
-                placeholder="Contact Email"
-                icon={<FaEnvelope />}
-              />
-              <InputWithIcon
-                type="tel"
-                name="contactPhone"
-                value={formData.contactPhone}
-                onChange={handleChange}
-                placeholder="Contact Phone"
-                icon={<FaPhone />}
-              />
-              <InputWithIcon
-                type="url"
-                name="website"
-                value={formData.website}
-                onChange={handleChange}
-                placeholder="Website URL"
-                icon={<FaGlobe />}
-              />
-            </motion.div>
-          )}
+              <motion.div
+                key="contact"
+                initial={{ opacity: 0, x: 100 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -100 }}
+                transition={{ duration: 0.4 }}
+                className="grid grid-cols-1 md:grid-cols-2 gap-6"
+              >
+                <InputWithIcon
+                  type="email"
+                  name="contactEmail"
+                  value={formData.contactEmail}
+                  onChange={handleChange}
+                  placeholder="Contact Email"
+                  icon={<FaEnvelope />}
+                />
+                <InputWithIcon
+                  type="tel"
+                  name="contactPhone"
+                  value={formData.contactPhone}
+                  onChange={handleChange}
+                  placeholder="Contact Phone"
+                  icon={<FaPhone />}
+                />
+                <InputWithIcon
+                  type="url"
+                  name="website"
+                  value={formData.website}
+                  onChange={handleChange}
+                  placeholder="Website URL"
+                  icon={<FaGlobe />}
+                />
+              </motion.div>
+            )}
 
           {listingType === "hotel" &&
-            currentSlide ===
-              allSlides.findIndex((s) => s.title === "Rooms & Stars") && (
+            basicinfoStep ===
+            allSlides.findIndex((s) => s.title === "Rooms & Stars") && (
               <motion.div
                 key="rooms"
                 initial={{ opacity: 0, x: 100 }}
@@ -318,120 +319,119 @@ const BasicInfo = ({ listingType, onChange }: BasicInfoProps) => {
               </motion.div>
             )}
 
-          {currentSlide ===
+          {basicinfoStep ===
             allSlides.findIndex(
               (s) => s.title === "Amenities & Policies"
             ) && (
-            <motion.div
-              key="amenities"
-              initial={{ opacity: 0, x: 100 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -100 }}
-              transition={{ duration: 0.4 }}
-              className="grid grid-cols-1 md:grid-cols-2 gap-6"
-            >
-              <div className="md:col-span-2">
-                <h3 className="text-xl font-semibold mb-3 text-gray-800 dark:text-gray-200">
-                  Amenities
-                </h3>
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                  {amenitiesOptions.slice(0, 6).map((amenity) => (
-                    <label
-                      key={amenity.label}
-                      className="flex items-center gap-2 p-3 rounded-xl cursor-pointer transition-colors duration-200
+              <motion.div
+                key="amenities"
+                initial={{ opacity: 0, x: 100 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -100 }}
+                transition={{ duration: 0.4 }}
+                className="grid grid-cols-1 md:grid-cols-2 gap-6"
+              >
+                <div className="md:col-span-2">
+                  <h3 className="text-xl font-semibold mb-3 text-gray-800 dark:text-gray-200">
+                    Amenities
+                  </h3>
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                    {amenitiesOptions.slice(0, 6).map((amenity) => (
+                      <label
+                        key={amenity.label}
+                        className="flex items-center gap-2 p-3 rounded-xl cursor-pointer transition-colors duration-200
                       bg-gray-100 dark:bg-gray-700 hover:bg-indigo-100 dark:hover:bg-indigo-900"
-                    >
-                      <input
-                        type="checkbox"
-                        value={amenity.label}
-                        checked={formData.amenities.includes(amenity.label)}
-                        onChange={handleChange}
-                        className="hidden"
-                      />
-                      <div
-                        className={`w-6 h-6 rounded-md flex items-center justify-center border-2 transition-all duration-200
-                        ${
-                          formData.amenities.includes(amenity.label)
-                            ? "bg-indigo-600 border-indigo-600"
-                            : "bg-white border-gray-300 dark:bg-gray-800 dark:border-gray-600"
-                        }`}
                       >
-                        {formData.amenities.includes(amenity.label) && (
-                          <motion.svg
-                            className="w-4 h-4 text-white"
-                            fill="currentColor"
-                            viewBox="0 0 24 24"
-                            initial={{ scale: 0 }}
-                            animate={{ scale: 1 }}
-                            transition={{
-                              type: "spring",
-                              stiffness: 500,
-                              damping: 30,
-                            }}
-                          >
-                            <path d="M9.707 14.293a1 1 0 01-1.414 0l-3-3a1 1 0 011.414-1.414L9 12.586l5.293-5.293a1 1 0 011.414 1.414l-6 6a1 1 0 01-.083.123z" />
-                          </motion.svg>
-                        )}
-                      </div>
-                      <div className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
-                        {amenity.icon}
-                        <span className="text-sm font-medium">
-                          {amenity.label}
-                        </span>
-                      </div>
-                    </label>
-                  ))}
-                  {amenitiesOptions.length > 6 && (
-                    <motion.button
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                      onClick={() => setShowAmenitiesModal(true)}
-                      className="flex items-center justify-center gap-2 p-3 rounded-xl cursor-pointer transition-colors duration-200 bg-blue-100 text-blue-600 dark:bg-blue-900 dark:text-blue-300 hover:bg-blue-200"
-                    >
-                      <FaPlus />
-                      Add More
-                    </motion.button>
-                  )}
+                        <input
+                          type="checkbox"
+                          value={amenity.label}
+                          checked={formData.amenities.includes(amenity.label)}
+                          onChange={handleChange}
+                          className="hidden"
+                        />
+                        <div
+                          className={`w-6 h-6 rounded-md flex items-center justify-center border-2 transition-all duration-200
+                        ${formData.amenities.includes(amenity.label)
+                              ? "bg-indigo-600 border-indigo-600"
+                              : "bg-white border-gray-300 dark:bg-gray-800 dark:border-gray-600"
+                            }`}
+                        >
+                          {formData.amenities.includes(amenity.label) && (
+                            <motion.svg
+                              className="w-4 h-4 text-white"
+                              fill="currentColor"
+                              viewBox="0 0 24 24"
+                              initial={{ scale: 0 }}
+                              animate={{ scale: 1 }}
+                              transition={{
+                                type: "spring",
+                                stiffness: 500,
+                                damping: 30,
+                              }}
+                            >
+                              <path d="M9.707 14.293a1 1 0 01-1.414 0l-3-3a1 1 0 011.414-1.414L9 12.586l5.293-5.293a1 1 0 011.414 1.414l-6 6a1 1 0 01-.083.123z" />
+                            </motion.svg>
+                          )}
+                        </div>
+                        <div className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
+                          {amenity.icon}
+                          <span className="text-sm font-medium">
+                            {amenity.label}
+                          </span>
+                        </div>
+                      </label>
+                    ))}
+                    {amenitiesOptions.length > 6 && (
+                      <motion.button
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        onClick={() => setShowAmenitiesModal(true)}
+                        className="flex items-center justify-center gap-2 p-3 rounded-xl cursor-pointer transition-colors duration-200 bg-blue-100 text-blue-600 dark:bg-blue-900 dark:text-blue-300 hover:bg-blue-200"
+                      >
+                        <FaPlus />
+                        Add More
+                      </motion.button>
+                    )}
+                  </div>
                 </div>
-              </div>
-              <TextareaWithIcon
-                name="policies"
-                value={formData.policies}
-                onChange={handleChange}
-                placeholder="Policies & rules"
-                icon={<FaLock />}
-              />
-            </motion.div>
-          )}
+                <TextareaWithIcon
+                  name="policies"
+                  value={formData.policies}
+                  onChange={handleChange}
+                  placeholder="Policies & rules"
+                  icon={<FaLock />}
+                />
+              </motion.div>
+            )}
 
-          {currentSlide ===
+          {basicinfoStep ===
             allSlides.findIndex((s) => s.title === "Social Links") && (
-            <motion.div
-              key="social"
-              initial={{ opacity: 0, x: 100 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -100 }}
-              transition={{ duration: 0.4 }}
-              className="grid grid-cols-1 md:grid-cols-2 gap-6"
-            >
-              <InputWithIcon
-                type="url"
-                name="facebook"
-                value={formData.facebook}
-                onChange={handleChange}
-                placeholder="Facebook URL"
-                icon={<FaFacebook />}
-              />
-              <InputWithIcon
-                type="url"
-                name="instagram"
-                value={formData.instagram}
-                onChange={handleChange}
-                placeholder="Instagram URL"
-                icon={<FaInstagram />}
-              />
-            </motion.div>
-          )}
+              <motion.div
+                key="social"
+                initial={{ opacity: 0, x: 100 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -100 }}
+                transition={{ duration: 0.4 }}
+                className="grid grid-cols-1 md:grid-cols-2 gap-6"
+              >
+                <InputWithIcon
+                  type="url"
+                  name="facebook"
+                  value={formData.facebook}
+                  onChange={handleChange}
+                  placeholder="Facebook URL"
+                  icon={<FaFacebook />}
+                />
+                <InputWithIcon
+                  type="url"
+                  name="instagram"
+                  value={formData.instagram}
+                  onChange={handleChange}
+                  placeholder="Instagram URL"
+                  icon={<FaInstagram />}
+                />
+              </motion.div>
+            )}
         </AnimatePresence>
       </div>
 
@@ -444,29 +444,27 @@ const BasicInfo = ({ listingType, onChange }: BasicInfoProps) => {
           {allSlides.map((slide, index) => (
             <motion.div
               key={index}
-              onClick={() => setCurrentSlide(index)}
+              onClick={() => { setBasicinfoStep(index) }}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               className={`relative flex items-center gap-4 px-4 py-2 rounded-xl cursor-pointer transition-colors duration-300
-                ${
-                  currentSlide === index
-                    ? "text-indigo-600 font-bold dark:text-indigo-400"
-                    : "text-gray-600 dark:text-gray-400 hover:text-indigo-500"
+                ${basicinfoStep === index
+                  ? "text-indigo-600 font-bold dark:text-indigo-400"
+                  : "text-gray-600 dark:text-gray-400 hover:text-indigo-500"
                 }
               `}
             >
               <span
                 className={`relative z-10 flex items-center justify-center w-8 h-8 rounded-full border-2 transition-all duration-300
-                ${
-                  currentSlide === index
+                ${basicinfoStep === index
                     ? "border-indigo-600 bg-indigo-50 dark:bg-indigo-900"
                     : "border-gray-300 dark:border-gray-600"
-                }`}
+                  }`}
               >
                 {slide.icon}
               </span>
               <span className="hidden md:block">{slide.title}</span>
-              {currentSlide === index && (
+              {basicinfoStep === index && (
                 <motion.span
                   layoutId="sidebar-indicator"
                   className="absolute inset-0 bg-blue-500/20 rounded-xl -z-10"
@@ -554,11 +552,10 @@ const BasicInfo = ({ listingType, onChange }: BasicInfoProps) => {
                         />
                         <div
                           className={`w-6 h-6 rounded-md flex items-center justify-center border-2 transition-all duration-200
-                          ${
-                            formData.amenities.includes(amenity.label)
+                          ${formData.amenities.includes(amenity.label)
                               ? "bg-indigo-600 border-indigo-600"
                               : "bg-white border-gray-300 dark:bg-gray-800 dark:border-gray-600"
-                          }`}
+                            }`}
                         >
                           {formData.amenities.includes(amenity.label) && (
                             <motion.svg

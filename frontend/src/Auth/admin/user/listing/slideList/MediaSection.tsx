@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { FiUploadCloud, FiX } from "react-icons/fi";
 import ImageModal from "../../../../../components/ImageModel/ImageModel"; // Import the new component
+import { ListingContext } from "../../../../../Context/ListingContext";
 
 const MediaSection: React.FC = () => {
-  const [uploadedImages, setUploadedImages] = useState<string[]>([]);
+  const { uploadedImages, setUploadedImages, uploadedVideos, setUploadedVideos } = useContext(ListingContext);
   const [isDragOver, setIsDragOver] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false); // New state for modal
 
@@ -15,7 +16,11 @@ const MediaSection: React.FC = () => {
       .filter((file) => file.type.startsWith("image/"))
       .map((file) => URL.createObjectURL(file));
 
-    setUploadedImages((prev) => [...prev, ...newImages]);
+    const newVideos = Array.from(files)
+      .filter((file) => file.type.startsWith("video/"))
+      .map((file) => URL.createObjectURL(file));
+    setUploadedVideos((prev: any) => [...prev, ...newVideos]);
+    setUploadedImages((prev: any) => [...prev, ...newImages]);
   };
 
   const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
@@ -34,8 +39,8 @@ const MediaSection: React.FC = () => {
   };
 
   const handleRemoveImage = (indexToRemove: number) => {
-    setUploadedImages((prev) =>
-      prev.filter((_, index) => index !== indexToRemove)
+    setUploadedImages((prev: string[]) =>
+      prev.filter((_: string, index: number) => index !== indexToRemove)
     );
   };
 
@@ -58,7 +63,7 @@ const MediaSection: React.FC = () => {
     exit: { opacity: 0, scale: 0.8, transition: { duration: 0.2 } },
   };
 
-  const maxPreviews = 6;
+  const maxPreviews = 3;
   const shouldShowMoreButton = uploadedImages.length > maxPreviews;
   const previewsToShow = shouldShowMoreButton ? maxPreviews : uploadedImages.length;
 
@@ -85,11 +90,10 @@ const MediaSection: React.FC = () => {
 
         {/* Drag and Drop Zone */}
         <motion.div
-          className={`relative border-2 border-dashed rounded-2xl p-8 text-center transition-all cursor-pointer ${
-            isDragOver
-              ? "border-blue-500 bg-gray-700 scale-[1.01]"
-              : "border-gray-600 bg-gray-700/50"
-          }`}
+          className={`relative border-2 border-dashed rounded-2xl p-8 text-center transition-all cursor-pointer ${isDragOver
+            ? "border-blue-500 bg-gray-700 scale-[1.01]"
+            : "border-gray-600 bg-gray-700/50"
+            }`}
           onDragOver={handleDragOver}
           onDragLeave={handleDragLeave}
           onDrop={handleDrop}
@@ -107,9 +111,8 @@ const MediaSection: React.FC = () => {
             onChange={(e) => handleFileChange(e.target.files)}
           />
           <FiUploadCloud
-            className={`w-12 h-12 mx-auto mb-4 transition-transform ${
-              isDragOver ? "scale-110 text-blue-400" : "text-gray-400"
-            }`}
+            className={`w-12 h-12 mx-auto mb-4 transition-transform ${isDragOver ? "scale-110 text-blue-400" : "text-gray-400"
+              }`}
           />
           <p className="text-sm text-gray-400 font-medium">
             <span className="text-blue-400 font-semibold">
@@ -140,9 +143,9 @@ const MediaSection: React.FC = () => {
               variants={containerVariants}
             >
               <AnimatePresence>
-                {uploadedImages.slice(0, previewsToShow).map((src, index) => (
+                {uploadedImages.slice(0, previewsToShow).map((src: string, index: number) => (
                   <motion.div
-                    key={src + index}
+                    key={src + index +1}
                     className="relative aspect-video rounded-xl overflow-hidden group shadow-lg"
                     variants={itemVariants}
                     initial="hidden"
