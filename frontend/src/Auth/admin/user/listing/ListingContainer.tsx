@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, progressPercentage } from "framer-motion";
 import Welcome from "../listing/slideList/welcome";
 import BasicInfo from "./slideList/BasicInfo";
 import LocationFeature from "./slideList/LocationFeature";
@@ -8,6 +8,7 @@ import PricingSection from "./slideList/PricingSection";
 import { ListingContext } from "../../../../Context/ListingContext";
 import { httpClient } from "../../../../services/http";
 import { GlobalContext } from "../../../../guard/GlobalContext";
+import { FiUploadCloud } from "react-icons/fi";
 
 function ListingContainer() {
   const { setIsHideHeader, user } = useContext(GlobalContext);
@@ -20,6 +21,10 @@ function ListingContainer() {
   const http = new httpClient();
   // Track user selection
   const [listingType, setListingType] = useState<"property" | "hotel" | "local" | null>(null);
+  type MediaFile = {
+    preview: string;
+    file: File;
+  };
 
   const handleSelectListing = (type: "property" | "hotel" | "local") => {
     setListingType(type);
@@ -30,8 +35,8 @@ function ListingContainer() {
   const [catId, setCatId] = useState<number>(0);
   const [category, setCategory] = useState(null);
   const [isLoading, setLoading] = useState(true);
-  const [uploadedImages, setUploadedImages] = useState<string[]>([]);
-  const [uploadedVideos, setUploadedVideos] = useState<string[]>([]);
+  const [uploadedImages, setUploadedImages] = useState<MediaFile[]>([]);
+  const [uploadedVideos, setUploadedVideos] = useState<MediaFile[]>([]);
 
 
   const [product, setProduct] = useState<any>({
@@ -61,6 +66,45 @@ function ListingContainer() {
       setLoading(false);
     });
 
+  }
+
+
+  const UploadMedia = async () => {
+    console.log("Uploaded Images:", uploadedImages);
+    console.log("Uploaded Videos:", uploadedVideos);
+
+    if (uploadedImages.length === 0 && uploadedVideos.length === 0) {
+      alert("Please upload at least one image or video.");
+      return;
+    }
+
+    const formData = new FormData();
+    uploadedImages.forEach((image) => {
+      formData.append("media", image.file);
+    }
+    );
+    uploadedVideos.forEach((video) => {
+      formData.append("media", video.file);
+    });
+
+    formData.append("userId", user.id);
+    formData.append("productId", localStorage.getItem("productId") || "1");
+
+    try {
+      await http.post("/api/media/upload", formData, (progress) => {
+        console.log(`Upload progress: ${progress}%`);
+      }).then((response: any) => {
+        console.log("Media uploaded successfully:", response.data);
+
+        console.log("Upload successful:", response.data);
+        setUploadedImages([]);
+        setUploadedVideos([]);
+      })
+
+    } catch (error) {
+      console.error("Error uploading media:", error);
+      alert("Failed to upload media. Please try again.");
+    }
   }
   useEffect(() => {
 
@@ -125,9 +169,10 @@ function ListingContainer() {
 
 
   return (
-    <ListingContext.Provider value={{ listingType, setListingType, category, isLoading,
-     setCatId, product, setBasicinfoStep, basicinfoStep, uploadedImages, setUploadedImages ,uploadedVideos, setUploadedVideos
-     }}>
+    <ListingContext.Provider value={{
+      listingType, setListingType, category, isLoading,
+      setCatId, product, setBasicinfoStep, basicinfoStep, uploadedImages, setUploadedImages, uploadedVideos, setUploadedVideos
+    }}>
       <div className="relative h-screen flex flex-col bg-gray-50 dark:bg-gray-900">
         {/* Main Content */}
         <div className="flex-1 flex flex-col items-center justify-center overflow-auto gap-8 px-6">
@@ -218,7 +263,7 @@ function ListingContainer() {
           <motion.button
             whileHover={{ scale: 1.1, boxShadow: "0 0 12px #3b82f6" }}
             whileTap={{ scale: 0.95 }}
-            onClick={() => currentStep==2 && basicinfoStep >0 ? setBasicinfoStep(basicinfoStep - 1) :
+            onClick={() => currentStep == 2 && basicinfoStep > 0 ? setBasicinfoStep(basicinfoStep - 1) :
               setCurrentStep(Math.max(currentStep - 1, 1))}
             disabled={currentStep <= 1}
             className="bg-blue-600/90 text-white px-6 py-3 rounded-xl shadow-lg disabled:opacity-50 disabled:cursor-not-allowed transition"
@@ -258,14 +303,15 @@ function ListingContainer() {
             whileHover={{ scale: 1.1, boxShadow: "0 0 12px #3b82f6" }}
             whileTap={{ scale: 0.95 }}
             onClick={() => {
-              currentStep==2 && basicinfoStep ==0 || basicinfoStep < 4 ? setBasicinfoStep(basicinfoStep + 1) :
-              setCurrentStep(Math.min(currentStep + 1, totalSteps))
+              currentStep == 2 && basicinfoStep == 0 || basicinfoStep < 4 ? setBasicinfoStep(basicinfoStep + 1) :
+                currentStep == 4 && uploadedImages.length > 0 || uploadedVideos.length > 0 ? UploadMedia() :
+                  setCurrentStep(Math.min(currentStep + 1, totalSteps))
 
             }}
             disabled={currentStep >= totalSteps}
             className="bg-blue-600/90 text-white px-6 py-3 rounded-xl shadow-lg disabled:opacity-50 disabled:cursor-not-allowed transition"
           >
-            Next
+            {currentStep == 4 && uploadedImages.length > 0 || uploadedVideos.length > 0 ? <FiUploadCloud /> : "Next"}
           </motion.button>
         </motion.div>
       </div>

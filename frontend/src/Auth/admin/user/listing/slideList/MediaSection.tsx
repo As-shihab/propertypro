@@ -14,14 +14,22 @@ const MediaSection: React.FC = () => {
 
     const newImages = Array.from(files)
       .filter((file) => file.type.startsWith("image/"))
-      .map((file) => URL.createObjectURL(file));
+      .map((file) => ({
+        preview: URL.createObjectURL(file),
+        file,
+      }));
 
     const newVideos = Array.from(files)
       .filter((file) => file.type.startsWith("video/"))
-      .map((file) => URL.createObjectURL(file));
-    setUploadedVideos((prev: any) => [...prev, ...newVideos]);
-    setUploadedImages((prev: any) => [...prev, ...newImages]);
+      .map((file) => ({
+        preview: URL.createObjectURL(file),
+        file,
+      }));
+
+    setUploadedImages((prev:any) => [...prev, ...newImages]);
+    setUploadedVideos((prev:any) => [...prev, ...newVideos]);
   };
+
 
   const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
@@ -143,9 +151,9 @@ const MediaSection: React.FC = () => {
               variants={containerVariants}
             >
               <AnimatePresence>
-                {uploadedImages.slice(0, previewsToShow).map((src: string, index: number) => (
+                {uploadedImages.slice(0, previewsToShow).map((src: any, index: number) => (
                   <motion.div
-                    key={src + index +1}
+                    key={src.preview + index + 11}
                     className="relative aspect-video rounded-xl overflow-hidden group shadow-lg"
                     variants={itemVariants}
                     initial="hidden"
@@ -154,8 +162,8 @@ const MediaSection: React.FC = () => {
                     layout
                   >
                     <img
-                      src={src}
-                      alt={`Uploaded preview ${index + 1}`}
+                      src={src?.preview}
+                      alt={`Uploaded preview ${index + 22}`}
                       className="w-full h-full object-cover"
                     />
                     <motion.div
