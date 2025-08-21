@@ -52,4 +52,6 @@ export class Product {
 
   @Edm.Int32
   userId: number;
+
+  medias: any;
 }

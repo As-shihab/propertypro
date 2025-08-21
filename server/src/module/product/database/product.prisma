@@ -38,6 +38,7 @@ model Product {
     bookings  Booking[]
     User      User?      @relation(fields: [userId], references: [id])
     userId    Int
+    medias    Media[]
 
     @@index([categoryId])
     @@map("products")

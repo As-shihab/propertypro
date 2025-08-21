@@ -1,6 +1,4 @@
 import axios from "axios";
-import { useContext } from "react";
-import { GlobalContext } from "../guard/GlobalContext";
 axios.defaults.baseURL = "http://localhost:3000";
 
 const axiosInstance = axios.create({
@@ -15,7 +13,7 @@ const axiosInstance = axios.create({
 export class httpClient {
   constructor() { }
   authUrl = "http://127.0.0.1:8000";
-  
+
   async post(endpoint: string, data: object | FormData, onProgress?: (percent: number) => void) {
     const isFormData = data instanceof FormData;
 
@@ -69,6 +67,9 @@ export class httpClient {
     return !!localStorage.getItem("token");
   }
 
+  http() {
+    return this.authUrl;
+  }
 
 
 }

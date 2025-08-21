@@ -6,6 +6,7 @@ import { PrismaService } from '@prisma/prisma.service';
 import { User } from '@models/auth/User';
 import { Product } from '@models/product/Product';
 import { Category } from '@models/product/Category';
+import { Media } from '@models/media/Media';
 
 
 const prismaService = new PrismaService();
@@ -25,6 +26,9 @@ const CategoryController = createODataController(Category, 'category', service);
 
 
 
+// ========== OData Media section ============
+const MediaController = createODataController(Media, 'media', service);
+
 
 
 
@@ -37,7 +41,7 @@ const CategoryController = createODataController(Category, 'category', service);
 // ========== Register Product Controllers ============
 @odata.controller(ProductController, true)
 @odata.controller(CategoryController, true)
-
+@odata.controller(MediaController, true)
 
 
 export class MyODataServer extends ODataServer {}

@@ -30,7 +30,7 @@ export class MediaController {
             if (file.mimetype.startsWith('image/')) folder = 'images';
             else if (file.mimetype.startsWith('video/')) folder = 'videos';
 
-            const uploadPath = join('src', 'storage', 'public', folder);
+            const uploadPath = join(process.cwd(), 'storage', 'public', folder);
             if (!existsSync(uploadPath)) mkdirSync(uploadPath, { recursive: true });
 
             cb(null, uploadPath);
@@ -57,8 +57,8 @@ export class MediaController {
       const media = await this.mediaService.createMedia({
         productId: body.productId ? Number(body.productId) : undefined,
         userId: body.userId ? Number(body.userId) : undefined,
-        fileName: file.originalname,
-        filePath: join('src', 'storage', 'public', folder, file.filename),
+        fileName: file.filename,
+        filePath: join('storage', 'public', folder, file.filename),
         fileType: file.mimetype,
         fileSize: file.size,
       });

@@ -7,10 +7,10 @@ import Card from "../../components/card/Card";
 import { httpClient } from "../../services/http";
 export default function PropertyPro() {
   const http = new httpClient();
-  const [product , setProduct] = useState([]);
+  const [product, setProduct] = useState([]);
 
 
- const fetchProducts = async () => {
+  const fetchProducts = async () => {
     try {
 
       const response = await http.get("/odata/Products");
@@ -23,9 +23,13 @@ export default function PropertyPro() {
 
 
   useEffect(() => {
-fetchProducts();
 
-  }, []);
+    if (!product) {
+      fetchProducts();
+    }
+
+
+  }, [product]);
   return (
     <div>
       <GlobalFilter />

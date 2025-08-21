@@ -1,13 +1,16 @@
 import { useContext, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { FiUploadCloud, FiX } from "react-icons/fi";
-import ImageModal from "../../../../../components/ImageModel/ImageModel"; // Import the new component
+import ImageModal from "../../../../../components/MediaModel/MediaModel"; // Import the new component
 import { ListingContext } from "../../../../../Context/ListingContext";
 
 const MediaSection: React.FC = () => {
-  const { uploadedImages, setUploadedImages, uploadedVideos, setUploadedVideos } = useContext(ListingContext);
+  const { uploadedImages, setUploadedImages, uploadedVideos, setUploadedVideos, isUploading, setIsUploading, uploadProgress, setUploadProgress
+
+  } = useContext(ListingContext);
   const [isDragOver, setIsDragOver] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false); // New state for modal
+
 
   const handleFileChange = (files: FileList | null) => {
     if (!files) return;
@@ -26,8 +29,8 @@ const MediaSection: React.FC = () => {
         file,
       }));
 
-    setUploadedImages((prev:any) => [...prev, ...newImages]);
-    setUploadedVideos((prev:any) => [...prev, ...newVideos]);
+    setUploadedImages((prev: any) => [...prev, ...newImages]);
+    setUploadedVideos((prev: any) => [...prev, ...newVideos]);
   };
 
 
@@ -98,7 +101,7 @@ const MediaSection: React.FC = () => {
 
         {/* Drag and Drop Zone */}
         <motion.div
-          className={`relative border-2 border-dashed rounded-2xl p-8 text-center transition-all cursor-pointer ${isDragOver
+          className={`relative border-2 border-dashed rounded-2xl  p-8 text-center transition-all ${isUploading?`cursor-wait`:`cursor-pointer`} overflow-hidden ${isDragOver
             ? "border-blue-500 bg-gray-700 scale-[1.01]"
             : "border-gray-600 bg-gray-700/50"
             }`}
@@ -110,25 +113,42 @@ const MediaSection: React.FC = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
         >
+          {/* Add this div for the animated background fill */}
+          {isUploading && (
+            <div
+              className="absolute top-0 left-0 h-full transition-all duration-300 ease-out"
+              style={{
+                width: `${uploadProgress}%`,
+                background: 'linear-gradient(to right, rgba(59, 130, 246, 0.2) 0%, rgba(59, 130, 246, 0) 100%)',
+                zIndex: 0, // Ensure it's behind the content
+              }}
+            ></div>
+          )}
+
+          {/* Existing content */}
           <input
             id="fileInput"
             type="file"
             multiple
             accept="image/*,video/*"
             className="hidden"
+            disabled={isUploading}
             onChange={(e) => handleFileChange(e.target.files)}
           />
           <FiUploadCloud
-            className={`w-12 h-12 mx-auto mb-4 transition-transform ${isDragOver ? "scale-110 text-blue-400" : "text-gray-400"
+            className={`w-12 h-12 mx-auto mb-4 relative z-10 transition-transform ${isDragOver ? "scale-110 text-blue-400" : "text-gray-400"
               }`}
           />
-          <p className="text-sm text-gray-400 font-medium">
-            <span className="text-blue-400 font-semibold">
-              Click to upload
-            </span>{" "}
+          {/* You will need to add a z-index to your p tags as well to make sure they are above the background div*/}
+          <p className="text-sm text-gray-400 font-medium relative z-10">
+            {isUploading ? (
+              <span className="text-blue-400 font-semibold">{`Uploading... ${uploadProgress}%`}</span>
+            ) : (
+              <span className="text-blue-400 font-semibold">Click to upload</span>
+            )}{" "}
             or drag and drop
           </p>
-          <p className="text-xs text-gray-500 mt-1">
+          <p className="text-xs text-gray-500 mt-1 relative z-10">
             PNG, JPG, MP4 up to 10MB
           </p>
         </motion.div>

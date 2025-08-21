@@ -46,7 +46,7 @@ export function createODataController(
         const count = await service.count(modelName, prismaQuery.where);
         return { count };
       }
-
+        console.log(prismaQuery ,'prisma query')
       return service.findAll(modelName, prismaQuery);
     }
 
