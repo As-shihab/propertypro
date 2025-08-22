@@ -122,15 +122,11 @@ CREATE TABLE `products` (
     `name` VARCHAR(191) NULL,
     `description` VARCHAR(191) NULL,
     `categoryId` INTEGER NOT NULL,
-    `isActive` BOOLEAN NOT NULL DEFAULT true,
-    `isArchived` BOOLEAN NOT NULL DEFAULT false,
-    `isComplete` INTEGER NOT NULL DEFAULT 0,
-    `currentStep` INTEGER NOT NULL DEFAULT 1,
-    `status` VARCHAR(191) NOT NULL DEFAULT 'good',
+    `status` VARCHAR(191) NOT NULL DEFAULT 'draft',
     `featured` BOOLEAN NOT NULL DEFAULT false,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
-    `userId` INTEGER NOT NULL,
+    `userId` INTEGER NULL,
 
     INDEX `products_categoryId_idx`(`categoryId`),
     PRIMARY KEY (`id`)
@@ -244,24 +240,6 @@ CREATE TABLE `amenities` (
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
-CREATE TABLE `medias` (
-    `id` INTEGER NOT NULL AUTO_INCREMENT,
-    `productId` INTEGER NULL,
-    `userId` INTEGER NULL,
-    `fileName` VARCHAR(191) NULL,
-    `filePath` VARCHAR(191) NULL,
-    `fileType` VARCHAR(191) NULL,
-    `fileSize` INTEGER NULL,
-    `altText` VARCHAR(191) NULL,
-    `isFeatured` BOOLEAN NOT NULL DEFAULT false,
-    `metadata` JSON NULL,
-    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
-    `updatedAt` DATETIME(3) NOT NULL,
-
-    PRIMARY KEY (`id`)
-) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-
--- CreateTable
 CREATE TABLE `_PermissionToRole` (
     `A` INTEGER NOT NULL,
     `B` INTEGER NOT NULL,
@@ -304,7 +282,7 @@ ALTER TABLE `role_permissions` ADD CONSTRAINT `role_permissions_permissionId_fke
 ALTER TABLE `products` ADD CONSTRAINT `products_categoryId_fkey` FOREIGN KEY (`categoryId`) REFERENCES `categories`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `products` ADD CONSTRAINT `products_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `users`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `products` ADD CONSTRAINT `products_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `users`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `locations` ADD CONSTRAINT `locations_productId_fkey` FOREIGN KEY (`productId`) REFERENCES `products`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -329,12 +307,6 @@ ALTER TABLE `room_types` ADD CONSTRAINT `room_types_productId_fkey` FOREIGN KEY 
 
 -- AddForeignKey
 ALTER TABLE `amenities` ADD CONSTRAINT `amenities_roomTypeId_fkey` FOREIGN KEY (`roomTypeId`) REFERENCES `room_types`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE `medias` ADD CONSTRAINT `medias_productId_fkey` FOREIGN KEY (`productId`) REFERENCES `products`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE `medias` ADD CONSTRAINT `medias_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `users`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `_PermissionToRole` ADD CONSTRAINT `_PermissionToRole_A_fkey` FOREIGN KEY (`A`) REFERENCES `permissions`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;

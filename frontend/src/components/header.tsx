@@ -30,7 +30,7 @@ export default function Header() {
   const [email, setEmail] = useState<string>("");
   const http = new httpClient();
   const { user, gfilter , isHideHeader } = useContext(GlobalContext);
-
+  console.log(user, "user in header");
   const handleClose = () => {
     setOpen(false);
     setTimeout(() => setMode("login"), 300);
