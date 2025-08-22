@@ -8,17 +8,23 @@ import PricingSection from "./slideList/PricingSection";
 import { ListingContext } from "../../../../Context/ListingContext";
 import { httpClient } from "../../../../services/http";
 import { GlobalContext } from "../../../../guard/GlobalContext";
+import { FiLoader, FiUploadCloud } from "react-icons/fi";
 
 function ListingContainer() {
-  const { setIsHideHeader } = useContext(GlobalContext);
+  const { setIsHideHeader, user } = useContext(GlobalContext);
   setIsHideHeader(true);
   const [currentStep, setCurrentStep] = useState(1);
+  const [basicinfoStep, setBasicinfoStep] = useState(0);
 
   const totalSteps = 5;
   const steps = ["Welcome", "Basic Info", "Location", "Media", "Review"];
   const http = new httpClient();
   // Track user selection
   const [listingType, setListingType] = useState<"property" | "hotel" | "local" | null>(null);
+  type MediaFile = {
+    preview: string;
+    file: File;
+  };
 
   const handleSelectListing = (type: "property" | "hotel" | "local") => {
     setListingType(type);
@@ -27,11 +33,111 @@ function ListingContainer() {
 
   // step one -> id and create empty product as draft
   const [catId, setCatId] = useState<number>(0);
-
-
   const [category, setCategory] = useState(null);
   const [isLoading, setLoading] = useState(true);
+  const [uploadedImages, setUploadedImages] = useState<MediaFile[]>([]);
+  const [uploadedVideos, setUploadedVideos] = useState<MediaFile[]>([]);
+  const [isUploading, setIsUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
 
+  const [product, setProduct] = useState<any>({
+    name: "",
+    description: "",
+    categoryId: 0,
+    userId: user?.id || 0,
+    isComplete: 0,
+    isActive: true,
+    isArchived: false,
+    status: ""
+
+  })
+
+
+  // create a new product if not exists
+
+  const createProduct = async (catId: number, userId: number) => {
+    await http.post("/odata/Products", { categoryId: catId, userId: userId }).then((response: any) => {
+      localStorage.setItem("productId", response.data.id);
+      setProduct(response.data);
+      setLoading(false);
+    }).catch((error) => {
+      setCurrentStep(1)
+      console.error("Error creating product:", error);
+    }).finally(() => {
+      setLoading(false);
+    });
+
+  }
+
+
+  const getMedia = async () => {
+    if (!user || !user.id) return;
+
+    try {
+      setLoading(true);
+      const response = await http.get(`/odata/Medias?$filter=userId eq ${user.id} and productId eq ${localStorage.getItem("productId") || "1"}`);
+      const media = response.data.value;
+      console.log("Fetched media:", media);
+      const images = media.filter((item: any) => item?.fileType?.startsWith("image/"));
+      const videos = media.filter((item: any) => item?.fileType?.startsWith("video/"));
+      setUploadedImages(images.map((img: any) => ({ preview: img.filePath, file: img })));
+      setUploadedVideos(videos.map((vid: any) => ({ preview: vid.filePath, file: vid })));
+
+    } catch (error) {
+      console.error("Error fetching media:", error);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+
+  const UploadMedia = async () => {
+    console.log("Uploaded Images:", uploadedImages);
+    console.log("Uploaded Videos:", uploadedVideos);
+
+    if (uploadedImages.length === 0 && uploadedVideos.length === 0) {
+      alert("Please upload at least one image or video.");
+      return;
+    }
+
+    const formData = new FormData();
+    uploadedImages.forEach((image) => {
+      formData.append("media", image.file);
+    }
+    );
+    uploadedVideos.forEach((video) => {
+      formData.append("media", video.file);
+    });
+
+    formData.append("userId", user.id);
+    formData.append("productId", localStorage.getItem("productId") || "1");
+
+    try {
+      setIsUploading(true);
+      setLoading(true);
+      await http.post("/api/media/upload", formData, (progress) => {
+        setUploadProgress(progress);
+        console.log(`Upload progress: ${progress}%`);
+      }).then((response: any) => {
+        console.log("Media uploaded successfully:", response.data);
+
+        console.log("Upload successful:", response.data);
+        setUploadedImages([]);
+        setUploadedVideos([]);
+      }).finally(() => {
+        setIsUploading(false);
+        setUploadProgress(0);
+        setTimeout(() => {
+          setCurrentStep(5)
+        }, 1000);
+      }
+      );
+
+    } catch (error) {
+      console.error("Error uploading media:", error);
+      alert("Failed to upload media. Please try again.");
+    }
+  }
   useEffect(() => {
 
     const FetchListingData = async () => {
@@ -52,19 +158,42 @@ function ListingContainer() {
 
 
         case 2:
-
-          if (listingType && catId) {
+          if (listingType && catId && user) {
             setLoading(true);
-            await http.post("/odata/Products", { categoryId: catId }).then((response: any) => {
-              localStorage.setItem("productId", response.data.id);
-              setLoading(false);
+            await http.get(`/odata/Products?$filter=isComplete eq ${0} and userId eq ${user.id} and categoryId eq ${catId} `).then((response: any) => {
+
+              if (response.data.value.length === 0 || !response.data.value[0]) {
+                createProduct(catId, user.id);
+              } else {
+                localStorage.setItem("productId", response.data.value[0].id);
+                setProduct(response.data.value[0]);
+                setLoading(false);
+                console.log("Product fetched:", response.data.value[0]);
+              }
             }).catch((error) => {
-              console.error("Error creating product:", error);
+              console.error("Error fetching product:", error);
+              setLoading(false);
             }).finally(() => {
               setLoading(false);
             });
+
+
+          } else {
+            alert("Please select a listing type and category before proceeding.");
           }
           break;
+
+        case 3:
+
+          break;
+
+        case 4:
+          // Fetch media if not already fetched
+          if (uploadedImages.length === 0 && uploadedVideos.length === 0) {
+            await getMedia();
+          }
+          break;
+
 
         default:
           console.log("No specific data fetch for this step");
@@ -83,7 +212,11 @@ function ListingContainer() {
 
 
   return (
-    <ListingContext.Provider value={{ listingType, setListingType, category, isLoading, setCatId }}>
+    <ListingContext.Provider value={{
+      listingType, setListingType, category, isLoading,
+      setCatId, product, setBasicinfoStep, basicinfoStep, uploadedImages, setUploadedImages, uploadedVideos, setUploadedVideos
+      , isUploading, setIsUploading, uploadProgress, setUploadProgress
+    }}>
       <div className="relative h-screen flex flex-col bg-gray-50 dark:bg-gray-900">
         {/* Main Content */}
         <div className="flex-1 flex flex-col items-center justify-center overflow-auto gap-8 px-6">
@@ -174,7 +307,8 @@ function ListingContainer() {
           <motion.button
             whileHover={{ scale: 1.1, boxShadow: "0 0 12px #3b82f6" }}
             whileTap={{ scale: 0.95 }}
-            onClick={() => setCurrentStep(Math.max(currentStep - 1, 1))}
+            onClick={() => currentStep == 2 && basicinfoStep > 0 ? setBasicinfoStep(basicinfoStep - 1) :
+              setCurrentStep(Math.max(currentStep - 1, 1))}
             disabled={currentStep <= 1}
             className="bg-blue-600/90 text-white px-6 py-3 rounded-xl shadow-lg disabled:opacity-50 disabled:cursor-not-allowed transition"
           >
@@ -212,11 +346,16 @@ function ListingContainer() {
           <motion.button
             whileHover={{ scale: 1.1, boxShadow: "0 0 12px #3b82f6" }}
             whileTap={{ scale: 0.95 }}
-            onClick={() => setCurrentStep(Math.min(currentStep + 1, totalSteps))}
-            disabled={currentStep >= totalSteps}
+            onClick={() => {
+              currentStep == 2 && basicinfoStep == 0 || basicinfoStep < 4 ? setBasicinfoStep(basicinfoStep + 1) :
+                currentStep == 4 && uploadedImages.length > 0 || uploadedVideos.length > 0 ? UploadMedia() :
+                  setCurrentStep(Math.min(currentStep + 1, totalSteps))
+
+            }}
+            disabled={currentStep >= totalSteps || isUploading || isLoading}
             className="bg-blue-600/90 text-white px-6 py-3 rounded-xl shadow-lg disabled:opacity-50 disabled:cursor-not-allowed transition"
           >
-            Next
+          {currentStep == 4 && uploadedImages.length > 0 || uploadedVideos.length > 0 ? <div>{!isUploading? <FiUploadCloud className={`animate-pulse`} /> :<FiLoader className="animate-spin"/>}</div> : "Next"}
           </motion.button>
         </motion.div>
       </div>

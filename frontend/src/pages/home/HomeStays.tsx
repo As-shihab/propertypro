@@ -1,42 +1,53 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import GlobalFilter from "../../components/GlobalFilter/GlobalFilter";
 import Card from "../../components/card/Card";
-// import { GlobalContext } from "../../guard/GlobalContext";
-// import { useScrollInfo } from "../../helpers/scrollWatcher";
-// import { useGeoLocation } from "../../helpers/geoLocation";
+import LoadingGrid from "../../components/CardLoader/cardLoader";
 import { httpClient } from "../../services/http";
+import { GlobalContext } from "../../guard/GlobalContext";
+
 export default function PropertyPro() {
+  const [isProductLoading, setProductLoading] = useState(false);
+  const { product, setProduct } = useContext(GlobalContext);
   const http = new httpClient();
-  const [product , setProduct] = useState([]);
 
-
- const fetchProducts = async () => {
+  const fetchProducts = async () => {
+    setProductLoading(true); // start loading
     try {
-
-      const response = await http.get("/odata/Products");
-      setProduct(response.data.value);
+      const res = await http.get(`/api/product?$expand=medias&$filter=isComplete eq ${true}`);
+      console.log(res.data, "data");
+      setProduct(res.data);
     } catch (error) {
       console.error("Error fetching products:", error);
-
+    } finally {
+      setProductLoading(false); // stop loading
     }
   };
 
-
   useEffect(() => {
-fetchProducts();
-
+    if (!product || product.length === 0) {
+      fetchProducts();
+    }
   }, []);
+
   return (
-    <div>
-      <GlobalFilter />
+<div className="w-full ">
+  <GlobalFilter />
 
-      {/* card view */}
-
-      <div className="w-[98%] grid xl:grid-cols-3 2xl:grid-cols-5 gap-2 m-auto mt-10">
-        {product.map(() => {
-          return <Card />;
-        })}
-      </div>
+  {/* Card View */}
+  {isProductLoading ? (
+    <LoadingGrid />
+  ) : product && product.product ? (
+    <div className="grid 2xl:grid-cols-5 gap-7 md:grid-cols-2 xl:grid-cols-4  px-4 mt-3">
+      {Object.values(product.product).map((item: any, idx: number) => (
+        <Card key={idx} {...item} />
+      ))}
     </div>
+  ) : (
+    <span className="block text-center text-gray-500 mt-10">No product found</span>
+  )}
+</div>
+
+
+
   );
 }

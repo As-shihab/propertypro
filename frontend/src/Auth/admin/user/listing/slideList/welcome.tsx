@@ -1,7 +1,6 @@
 import { useContext, useState } from "react";
 import { motion } from "framer-motion";
 import { ListingContext } from "../../../../../Context/ListingContext";
-import parse from 'html-react-parser';
 import { FaHotel } from "react-icons/fa6";
 
 interface WelcomeProps {
@@ -54,8 +53,8 @@ const Welcome = ({ onSelectListing }: WelcomeProps) => {
               key={option?.name}
               onClick={() => {
                 setCatId(option?.id);
-                setSelected(option?.name as any);
-                onSelectListing(option?.name as any);
+                setSelected('hotel' as any);
+                onSelectListing(String(option?.name).toLowerCase()as any);
               }}
               whileHover={{ scale: 1.05, boxShadow: "0 0 15px #3b82f6" }}
               whileTap={{ scale: 0.95 }}
@@ -65,7 +64,7 @@ const Welcome = ({ onSelectListing }: WelcomeProps) => {
                   : "border-gray-300 bg-white dark:bg-gray-800"
                 } shadow-lg`}
             >
-              <div className="text-indigo-600 dark:text-indigo-400">{parse(option.icon)}  {<FaHotel size={28} />}</div>
+              <div className="text-indigo-600 dark:text-indigo-400"> {<FaHotel size={28} />}</div>
               <span
                 className={`text-lg font-semibold ${selected === option?.name
                   ? "text-indigo-600 dark:text-indigo-400"

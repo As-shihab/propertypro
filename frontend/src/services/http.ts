@@ -1,5 +1,6 @@
 import axios from "axios";
-axios.defaults.baseURL = "http://localhost:3000";
+import { env } from "../env/env";
+axios.defaults.baseURL = env.local
 
 const axiosInstance = axios.create({
   headers: {
@@ -12,9 +13,24 @@ const axiosInstance = axios.create({
 
 export class httpClient {
   constructor() { }
-  authUrl = "http://127.0.0.1:8000";
-  async post(endpoint: string, data: object | any) {
-    return axiosInstance.post(endpoint, data);
+  async post(endpoint: string, data: object | FormData, onProgress?: (percent: number) => void) {
+    const isFormData = data instanceof FormData;
+
+    return axiosInstance.post(endpoint, data, {
+      headers: isFormData
+        ? { 'Content-Type': 'multipart/form-data' }
+        : { 'Content-Type': 'application/json' },
+      onUploadProgress: isFormData
+        ? (progressEvent) => {
+          if (onProgress) {
+            const percentCompleted = Math.round(
+              (progressEvent.loaded * 100) / (progressEvent.total || 1)
+            );
+            onProgress(percentCompleted);
+          }
+        }
+        : undefined,
+    });
   }
 
   async get(endpoint: string) {
@@ -49,5 +65,9 @@ export class httpClient {
   isAuthenticated() {
     return !!localStorage.getItem("token");
   }
+
+  image = env.local+'/public/images/'
+  video= env.local+'/public/videos/'
+
 
 }
