@@ -14,18 +14,6 @@ export class Product {
   @Edm.Int32
   categoryId: number;
 
-  @Edm.Boolean
-  isActive: boolean;
-
-  @Edm.Boolean
-  isArchived: boolean;
-
-  @Edm.Int32
-  isComplete: number;
-
-  @Edm.Int32
-  currentStep: number;
-
   @Edm.String
   status: string;
 
@@ -51,7 +39,5 @@ export class Product {
   bookings: any;
 
   @Edm.Int32
-  userId: number;
-
-  medias: any;
+  userId?: number;
 }

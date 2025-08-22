@@ -12,6 +12,7 @@ export function createODataController(
   service: GenericODataService,
 ) {
   const esName = `${modelName.charAt(0).toUpperCase()}${modelName.slice(1)}s`;
+
   const ControllerClass = class extends ODataController {
     async get(query: any) {
       const rawQuery: any = {}; 

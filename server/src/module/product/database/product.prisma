@@ -20,11 +20,7 @@ model Product {
     description String?
     category    Category @relation(fields: [categoryId], references: [id])
     categoryId  Int
-    isActive    Boolean  @default(true)
-    isArchived  Boolean  @default(false)
-    isComplete  Int      @default(0)
-    currentStep Int      @default(1)
-    status      String   @default("good")
+    status      String   @default("draft")
     featured    Boolean  @default(false)
     createdAt   DateTime @default(now())
     updatedAt   DateTime @updatedAt
@@ -37,8 +33,7 @@ model Product {
     reviews   Review[]
     bookings  Booking[]
     User      User?      @relation(fields: [userId], references: [id])
-    userId    Int
-    medias    Media[]
+    userId    Int?
 
     @@index([categoryId])
     @@map("products")
@@ -47,7 +42,7 @@ model Product {
 model Location {
     id           Int     @id @default(autoincrement())
     product      Product @relation(fields: [productId], references: [id])
-    productId    Int     @unique
+    productId    Int  @unique
     street       String
     city         String
     state        String?
@@ -70,7 +65,7 @@ model Location {
 model Pricing {
     id                 Int     @id @default(autoincrement())
     product            Product @relation(fields: [productId], references: [id])
-    productId          Int     @unique
+    productId          Int  @unique
     basePrice          Float   @default(0.0)
     currency           String  @default("USD")
     taxRate            Float   @default(0.0)

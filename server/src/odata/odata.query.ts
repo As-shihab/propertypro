@@ -1,7 +1,6 @@
 import { filter as parseFilter } from 'odata-v4-parser';
 
 export function convertToPrismaQuery(query: any): any {
-  console.log('from query')
   const prismaQuery: any = {};
 
   if (query?.$filter) {

@@ -1,6 +1,5 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { FiX } from "react-icons/fi";
-import { LazyLoadImage } from "react-lazy-load-image-component";
 
 interface ImageModalProps {
   images: string[];
@@ -51,7 +50,7 @@ const ImageModal: React.FC<ImageModalProps> = ({ images, onClose, onRemove }) =>
           >
             <FiX className="w-6 h-6" />
           </motion.button>
-
+          
           <div className="pt-24 pb-8">
             <motion.h2
               className="text-4xl font-bold text-white text-center mb-8"
@@ -68,22 +67,17 @@ const ImageModal: React.FC<ImageModalProps> = ({ images, onClose, onRemove }) =>
               initial="hidden"
               animate="visible"
             >
-              {images.map((src: any, index) => (
+              {images.map((src, index) => (
                 <motion.div
-                  key={src.preview + index+2}
+                  key={src + index}
                   className="relative aspect-video rounded-xl overflow-hidden group shadow-xl"
                   variants={itemVariants}
                 >
-                  <div className="flex items-center justify-center w-full h-full bg-gray-100 overflow-hidden">
-                    <LazyLoadImage
-                      src={src.preview}
-                      alt={`Uploaded media ${index + 3}`}
-                      className="max-w-full max-h-full object-contain"
-                      effect="blur"
-                      placeholderSrc={src.preview}
-                    />
-                  </div>
-
+                  <img
+                    src={src}
+                    alt={`Uploaded media ${index + 1}`}
+                    className="w-full h-full object-cover"
+                  />
                   <div className="absolute inset-0 flex items-center justify-center bg-gray-900/50 opacity-0 group-hover:opacity-100 transition-opacity">
                     <button
                       onClick={() => onRemove(index)}

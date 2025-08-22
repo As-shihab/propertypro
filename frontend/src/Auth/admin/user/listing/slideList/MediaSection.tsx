@@ -1,44 +1,22 @@
-import { useContext, useState } from "react";
+import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { FiUploadCloud, FiX } from "react-icons/fi";
-import ImageModal from "../../../../../components/MediaModel/MediaModel"; // Import the new component
-import { ListingContext } from "../../../../../Context/ListingContext";
+import ImageModal from "../../../../../components/ImageModel/ImageModel"; // Import the new component
 
 const MediaSection: React.FC = () => {
-  const { uploadedImages, setUploadedImages,  setUploadedVideos, isUploading,  uploadProgress, 
-
-// need latter
-// uploadedVideos
-// setIsUploading
-// setUploadProgress
-
-
-  } = useContext(ListingContext);
+  const [uploadedImages, setUploadedImages] = useState<string[]>([]);
   const [isDragOver, setIsDragOver] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false); // New state for modal
-
 
   const handleFileChange = (files: FileList | null) => {
     if (!files) return;
 
     const newImages = Array.from(files)
       .filter((file) => file.type.startsWith("image/"))
-      .map((file) => ({
-        preview: URL.createObjectURL(file),
-        file,
-      }));
+      .map((file) => URL.createObjectURL(file));
 
-    const newVideos = Array.from(files)
-      .filter((file) => file.type.startsWith("video/"))
-      .map((file) => ({
-        preview: URL.createObjectURL(file),
-        file,
-      }));
-
-    setUploadedImages((prev: any) => [...prev, ...newImages]);
-    setUploadedVideos((prev: any) => [...prev, ...newVideos]);
+    setUploadedImages((prev) => [...prev, ...newImages]);
   };
-
 
   const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
@@ -56,8 +34,8 @@ const MediaSection: React.FC = () => {
   };
 
   const handleRemoveImage = (indexToRemove: number) => {
-    setUploadedImages((prev: string[]) =>
-      prev.filter((_: string, index: number) => index !== indexToRemove)
+    setUploadedImages((prev) =>
+      prev.filter((_, index) => index !== indexToRemove)
     );
   };
 
@@ -80,7 +58,7 @@ const MediaSection: React.FC = () => {
     exit: { opacity: 0, scale: 0.8, transition: { duration: 0.2 } },
   };
 
-  const maxPreviews = 3;
+  const maxPreviews = 6;
   const shouldShowMoreButton = uploadedImages.length > maxPreviews;
   const previewsToShow = shouldShowMoreButton ? maxPreviews : uploadedImages.length;
 
@@ -107,10 +85,11 @@ const MediaSection: React.FC = () => {
 
         {/* Drag and Drop Zone */}
         <motion.div
-          className={`relative border-2 border-dashed rounded-2xl  p-8 text-center transition-all ${isUploading?`cursor-wait`:`cursor-pointer`} overflow-hidden ${isDragOver
-            ? "border-blue-500 bg-gray-700 scale-[1.01]"
-            : "border-gray-600 bg-gray-700/50"
-            }`}
+          className={`relative border-2 border-dashed rounded-2xl p-8 text-center transition-all cursor-pointer ${
+            isDragOver
+              ? "border-blue-500 bg-gray-700 scale-[1.01]"
+              : "border-gray-600 bg-gray-700/50"
+          }`}
           onDragOver={handleDragOver}
           onDragLeave={handleDragLeave}
           onDrop={handleDrop}
@@ -119,42 +98,26 @@ const MediaSection: React.FC = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
         >
-          {/* Add this div for the animated background fill */}
-          {isUploading && (
-            <div
-              className="absolute top-0 left-0 h-full transition-all duration-300 ease-out"
-              style={{
-                width: `${uploadProgress}%`,
-                background: 'linear-gradient(to right, rgba(59, 130, 246, 0.2) 0%, rgba(59, 130, 246, 0) 100%)',
-                zIndex: 0, // Ensure it's behind the content
-              }}
-            ></div>
-          )}
-
-          {/* Existing content */}
           <input
             id="fileInput"
             type="file"
             multiple
             accept="image/*,video/*"
             className="hidden"
-            disabled={isUploading}
             onChange={(e) => handleFileChange(e.target.files)}
           />
           <FiUploadCloud
-            className={`w-12 h-12 mx-auto mb-4 relative z-10 transition-transform ${isDragOver ? "scale-110 text-blue-400" : "text-gray-400"
-              }`}
+            className={`w-12 h-12 mx-auto mb-4 transition-transform ${
+              isDragOver ? "scale-110 text-blue-400" : "text-gray-400"
+            }`}
           />
-          {/* You will need to add a z-index to your p tags as well to make sure they are above the background div*/}
-          <p className="text-sm text-gray-400 font-medium relative z-10">
-            {isUploading ? (
-              <span className="text-blue-400 font-semibold">{`Uploading... ${uploadProgress}%`}</span>
-            ) : (
-              <span className="text-blue-400 font-semibold">Click to upload</span>
-            )}{" "}
+          <p className="text-sm text-gray-400 font-medium">
+            <span className="text-blue-400 font-semibold">
+              Click to upload
+            </span>{" "}
             or drag and drop
           </p>
-          <p className="text-xs text-gray-500 mt-1 relative z-10">
+          <p className="text-xs text-gray-500 mt-1">
             PNG, JPG, MP4 up to 10MB
           </p>
         </motion.div>
@@ -177,9 +140,9 @@ const MediaSection: React.FC = () => {
               variants={containerVariants}
             >
               <AnimatePresence>
-                {uploadedImages.slice(0, previewsToShow).map((src: any, index: number) => (
+                {uploadedImages.slice(0, previewsToShow).map((src, index) => (
                   <motion.div
-                    key={src.preview + index + 11}
+                    key={src + index}
                     className="relative aspect-video rounded-xl overflow-hidden group shadow-lg"
                     variants={itemVariants}
                     initial="hidden"
@@ -188,8 +151,8 @@ const MediaSection: React.FC = () => {
                     layout
                   >
                     <img
-                      src={src?.preview}
-                      alt={`Uploaded preview ${index + 22}`}
+                      src={src}
+                      alt={`Uploaded preview ${index + 1}`}
                       className="w-full h-full object-cover"
                     />
                     <motion.div
