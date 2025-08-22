@@ -1,5 +1,6 @@
 import axios from "axios";
-axios.defaults.baseURL = "http://localhost:3000";
+import { env } from "../env/env";
+axios.defaults.baseURL = env.local
 
 const axiosInstance = axios.create({
   headers: {
@@ -12,8 +13,6 @@ const axiosInstance = axios.create({
 
 export class httpClient {
   constructor() { }
-  authUrl = "http://127.0.0.1:8000";
-
   async post(endpoint: string, data: object | FormData, onProgress?: (percent: number) => void) {
     const isFormData = data instanceof FormData;
 
@@ -67,9 +66,8 @@ export class httpClient {
     return !!localStorage.getItem("token");
   }
 
-  http() {
-    return this.authUrl;
-  }
+  image = env.local+'/public/images/'
+  video= env.local+'/public/videos/'
 
 
 }

@@ -22,6 +22,7 @@ const UserController = createODataController(User, 'user', service);
 // =========== OData Product section ============
 
 const ProductController = createODataController(Product, 'product', service);
+console.log('from odata sever')
 const CategoryController = createODataController(Category, 'category', service);
 
 

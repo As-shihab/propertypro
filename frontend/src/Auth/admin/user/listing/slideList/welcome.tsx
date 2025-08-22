@@ -1,7 +1,6 @@
 import { useContext, useState } from "react";
 import { motion } from "framer-motion";
 import { ListingContext } from "../../../../../Context/ListingContext";
-import parse from 'html-react-parser';
 import { FaHotel } from "react-icons/fa6";
 
 interface WelcomeProps {

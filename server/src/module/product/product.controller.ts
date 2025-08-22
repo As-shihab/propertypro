@@ -1,11 +1,18 @@
-import { Controller, Get } from '@nestjs/common';
-import { PrismaService } from '@prisma/prisma.service';
+import { Controller, Get, Query } from '@nestjs/common';
+import { ProductService } from './product.service';
+
 @Controller()
 export class ProductController {
+  constructor(private readonly productService: ProductService) {}
+
   @Get()
-async  getHello() {
-    const http = new PrismaService(); // Ensure PrismaService is used
-    const res =await http.product.findMany({include:{medias:true}}); // Example usage of PrismaService
-    return { message: 'Product works', res:  res ? res : "No products found" };
+  async getProducts(@Query() query: any) {
+    const products = await this.productService.getProducts(query);
+
+    return {
+      success: true,
+      count: products.length,
+      product: products,
+    };
   }
 }

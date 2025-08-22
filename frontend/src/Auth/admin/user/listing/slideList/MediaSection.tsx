@@ -5,7 +5,13 @@ import ImageModal from "../../../../../components/MediaModel/MediaModel"; // Imp
 import { ListingContext } from "../../../../../Context/ListingContext";
 
 const MediaSection: React.FC = () => {
-  const { uploadedImages, setUploadedImages, uploadedVideos, setUploadedVideos, isUploading, setIsUploading, uploadProgress, setUploadProgress
+  const { uploadedImages, setUploadedImages,  setUploadedVideos, isUploading,  uploadProgress, 
+
+// need latter
+// uploadedVideos
+// setIsUploading
+// setUploadProgress
+
 
   } = useContext(ListingContext);
   const [isDragOver, setIsDragOver] = useState(false);
