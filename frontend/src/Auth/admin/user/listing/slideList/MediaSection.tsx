@@ -1,22 +1,22 @@
 import { useContext, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { FiUploadCloud, FiX } from "react-icons/fi";
+import { FiLoader, FiUploadCloud, FiX } from "react-icons/fi";
 import ImageModal from "../../../../../components/MediaModel/MediaModel"; // Import the new component
 import { ListingContext } from "../../../../../Context/ListingContext";
+import { LazyLoadImage } from "react-lazy-load-image-component";
+import { httpClient } from "../../../../../services/http";
 
 const MediaSection: React.FC = () => {
-  const { uploadedImages, setUploadedImages,  setUploadedVideos, isUploading,  uploadProgress, 
-
-// need latter
-// uploadedVideos
-// setIsUploading
-// setUploadProgress
-
-
+  const { uploadedImages, setUploadedImages, setUploadedVideos, isUploading, uploadProgress,
+    // need latter
+    // uploadedVideos
+    // setIsUploading
+    // setUploadProgress
   } = useContext(ListingContext);
+  const http = new httpClient()
   const [isDragOver, setIsDragOver] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false); // New state for modal
-
+  const [deleteLoading, setDeletLoading] = useState(false)
 
   const handleFileChange = (files: FileList | null) => {
     if (!files) return;
@@ -38,6 +38,23 @@ const MediaSection: React.FC = () => {
     setUploadedImages((prev: any) => [...prev, ...newImages]);
     setUploadedVideos((prev: any) => [...prev, ...newVideos]);
   };
+
+  const onDeleteMedia = async (file: any, index: number) => {
+    if (file?.preview.startsWith('blob')) {
+      handleRemoveImage(index)
+    }
+    else {
+      setDeletLoading(true)
+      await http.delete("/api/media", file?.file.id)
+        .then(() => {
+          handleRemoveImage(index)
+        }).catch(() => {
+          console.warn("somthing went wrong during delete")
+        }).finally(() => {
+          setDeletLoading(false)
+        })
+    }
+  }
 
 
   const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
@@ -107,7 +124,7 @@ const MediaSection: React.FC = () => {
 
         {/* Drag and Drop Zone */}
         <motion.div
-          className={`relative border-2 border-dashed rounded-2xl  p-8 text-center transition-all ${isUploading?`cursor-wait`:`cursor-pointer`} overflow-hidden ${isDragOver
+          className={`relative border-2 border-dashed rounded-2xl  p-8 text-center transition-all ${isUploading ? `cursor-wait` : `cursor-pointer`} overflow-hidden ${isDragOver
             ? "border-blue-500 bg-gray-700 scale-[1.01]"
             : "border-gray-600 bg-gray-700/50"
             }`}
@@ -187,9 +204,10 @@ const MediaSection: React.FC = () => {
                     exit="exit"
                     layout
                   >
-                    <img
-                      src={src?.preview}
+                    <LazyLoadImage
+                      src={src?.preview.startsWith('blob') ? src?.preview : http.image + src?.file.fileName}
                       alt={`Uploaded preview ${index + 22}`}
+                      effect="blur"
                       className="w-full h-full object-cover"
                     />
                     <motion.div
@@ -198,11 +216,11 @@ const MediaSection: React.FC = () => {
                       whileHover={{ opacity: 1 }}
                     >
                       <button
-                        onClick={() => handleRemoveImage(index)}
-                        className="bg-red-500 text-white rounded-full p-2 transition-transform hover:scale-110"
+                        onClick={() => { onDeleteMedia(src, index) }}
+                        className={`  ${deleteLoading ? `bg-slate-600` : `bg-red-600`} text-white rounded-full p-3 transition-transform hover:scale-110`}
                         aria-label="Remove image"
                       >
-                        <FiX className="w-5 h-5" />
+                        {deleteLoading ? <FiLoader className="animate-spin" /> : <FiX className="w-6 h-6" />}
                       </button>
                     </motion.div>
                   </motion.div>

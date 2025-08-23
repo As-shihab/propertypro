@@ -1,6 +1,8 @@
 import { motion, AnimatePresence } from "framer-motion";
-import { FiX } from "react-icons/fi";
+import { FiLoader, FiX } from "react-icons/fi";
 import { LazyLoadImage } from "react-lazy-load-image-component";
+import { httpClient } from "../../services/http";
+import { useState } from "react";
 
 interface ImageModalProps {
   images: string[];
@@ -9,11 +11,33 @@ interface ImageModalProps {
 }
 
 const ImageModal: React.FC<ImageModalProps> = ({ images, onClose, onRemove }) => {
+  const [deleteLoading, setDeletLoading] = useState(false)
+  const http = new httpClient();
   const modalVariants = {
     hidden: { opacity: 0 },
     visible: { opacity: 1, transition: { duration: 0.3 } },
     exit: { opacity: 0, transition: { duration: 0.2 } },
   };
+
+  console.log(images, 'from view')
+
+
+  const onDeleteMedia = async (file: any, index: number) => {
+    if (file?.preview.startsWith('blob')) {
+      onRemove(index)
+    }
+    else {
+      setDeletLoading(true)
+      await http.delete("/api/media", file?.file.id)
+        .then(() => {
+          onRemove(index)
+        }).catch(() => {
+          console.warn("somthing went wrong during delete")
+        }).finally(() => {
+          setDeletLoading(false)
+        })
+    }
+  }
 
   const galleryVariants = {
     hidden: { opacity: 0 },
@@ -70,27 +94,27 @@ const ImageModal: React.FC<ImageModalProps> = ({ images, onClose, onRemove }) =>
             >
               {images.map((src: any, index) => (
                 <motion.div
-                  key={src.preview + index+2}
+                  key={src.preview + index + 2}
                   className="relative aspect-video rounded-xl overflow-hidden group shadow-xl"
                   variants={itemVariants}
                 >
                   <div className="flex items-center justify-center w-full h-full bg-gray-100 overflow-hidden">
                     <LazyLoadImage
-                      src={src.preview}
+                      src={src?.preview.startsWith('blob') ? src?.preview : http.image + src?.file.fileName}
                       alt={`Uploaded media ${index + 3}`}
                       className="max-w-full max-h-full object-contain"
                       effect="blur"
-                      placeholderSrc={src.preview}
+                      placeholderSrc={src?.preview}
                     />
                   </div>
 
                   <div className="absolute inset-0 flex items-center justify-center bg-gray-900/50 opacity-0 group-hover:opacity-100 transition-opacity">
                     <button
-                      onClick={() => onRemove(index)}
-                      className="bg-red-600 text-white rounded-full p-3 transition-transform hover:scale-110"
+                      onClick={() => { onDeleteMedia(src, index) }}
+                      className={`  ${deleteLoading? `bg-slate-600` : `bg-red-600`} text-white rounded-full p-3 transition-transform hover:scale-110`}
                       aria-label="Remove image"
                     >
-                      <FiX className="w-6 h-6" />
+                    {deleteLoading ? <FiLoader className="animate-spin"/> :   <FiX className="w-6 h-6" />}
                     </button>
                   </div>
                 </motion.div>
